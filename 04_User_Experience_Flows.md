@@ -3,16 +3,17 @@
 ## Table of Contents
 1. [System Overview & User Roles](#system-overview--user-roles)
 2. [YARDR Unified App Journey](#yardr-unified-app-journey)
-3. [Admin Dashboard Journey](#admin-dashboard-journey)
+3. [Authentication & Login Flows](#authentication--login-flows)
 4. [Equipment Management Flows](#equipment-management-flows)
 5. [Order & Booking Management](#order--booking-management)
 6. [Payment & Financial Flows](#payment--financial-flows)
 7. [AI Assistant & Smart Features](#ai-assistant--smart-features)
 8. [Tracking & Delivery System](#tracking--delivery-system)
-9. [Communication & Support](#communication--support)
-10. [Settings & Profile Management](#settings--profile-management)
-11. [Error Handling & Edge Cases](#error-handling--edge-cases)
-12. [User Experience Considerations](#user-experience-considerations)
+9. [Admin Dashboard Journey](#admin-dashboard-journey)
+10. [Communication & Support](#communication--support)
+11. [Settings & Profile Management](#settings--profile-management)
+12. [Error Handling & Edge Cases](#error-handling--edge-cases)
+13. [User Experience Considerations](#user-experience-considerations)
 
 ## System Overview & User Roles
 
@@ -43,25 +44,41 @@ flowchart TD
     UserType -->|Individual| IndividualOnboarding[Individual Onboarding]
     UserType -->|Company| CompanyOnboarding[Company Onboarding]
     
-    IndividualOnboarding --> BasicRegistration[Basic Registration:<br/>- Name<br/>- Phone<br/>- Email]
-    CompanyOnboarding --> CompanyRegistration[Company Registration:<br/>- Company Name<br/>- License Number<br/>- Contact Info]
+    IndividualOnboarding --> BasicRegistration[Basic Registration:<br/>- Name<br/>- Phone<br/>- Email<br/>- Password]
+    CompanyOnboarding --> CompanyRegistration[Company Registration:<br/>- Company Name<br/>- License Number<br/>- Contact Info<br/>- Email<br/>- Password]
     
     BasicRegistration --> PhoneVerification[Phone Verification]
     CompanyRegistration --> PhoneVerification
     
     PhoneVerification --> ProfileSetup[Profile Setup:<br/>- Address<br/>- Preferences<br/>- Language]
     
-    ProfileSetup --> PACIOption{PACI Verification?}
-    PACIOption -->|Yes| PACIFlow[PACI Verification]
-    PACIOption -->|No| BasicUser[Basic User Status]
+    ProfileSetup --> UserTypeCheck{User Type?}
+    UserTypeCheck -->|Individual| IndividualComplete[Individual Registration Complete:<br/>- Basic User Status<br/>- Can Rent Equipment<br/>- No PACI Required]
+    UserTypeCheck -->|Company| PACIVerification[PACI Verification Required:<br/>- Company Documents<br/>- License Verification<br/>- Business Registration<br/>- Admin Review]
     
-    PACIFlow --> TrustedUser[Trusted User Status]
-    BasicUser --> Dashboard[Main Dashboard]
-    TrustedUser --> Dashboard
+    IndividualComplete --> Dashboard[Main Dashboard]
+    PACIVerification --> TrustedCompany[Trusted Company Status:<br/>- Full Platform Access<br/>- Can List Equipment<br/>- Driver Management<br/>- Business Features]
+    TrustedCompany --> Dashboard
     
     AuthCheck -->|Yes| Dashboard
     AuthCheck -->|No| Login[Login Screen]
-    Login --> Dashboard
+    Login --> LoginMethod{Login Method?}
+    LoginMethod -->|Email| EmailLogin[Email Login:<br/>- Email Address<br/>- Password<br/>- Remember Me]
+    LoginMethod -->|Phone| PhoneLogin[Phone Login:<br/>- Phone Number<br/>- OTP Verification]
+    
+    EmailLogin --> LoginValidation[Login Validation:<br/>- Check Credentials<br/>- Verify Account<br/>- Check Status]
+    PhoneLogin --> SendOTP[Send OTP:<br/>- SMS Code<br/>- Verification]
+    
+    SendOTP --> OTPVerification[OTP Verification:<br/>- Enter Code<br/>- Verify OTP<br/>- Login Success]
+    
+    LoginValidation --> LoginResult{Login Result?}
+    OTPVerification --> LoginResult
+    
+    LoginResult -->|Success| Dashboard
+    LoginResult -->|Failed| LoginError[Login Error:<br/>- Wrong Credentials<br/>- Account Issues<br/>- Retry Options]
+    
+    LoginError --> RetryLogin[Retry Login:<br/>- Try Again<br/>- Forgot Password<br/>- Contact Support]
+    RetryLogin --> Login
 ```
 
 ### Main Dashboard Navigation
@@ -87,6 +104,180 @@ flowchart TD
     CompanyAction -->|Drivers| DriverManagement[Driver Management]
     CompanyAction -->|Profile| CompanyProfile[Company Profile]
 ```
+
+## Authentication & Login Flows
+
+### Login Process
+
+```mermaid
+flowchart TD
+    LoginScreen[Login Screen] --> LoginMethod{Login Method?}
+    
+    LoginMethod -->|Email| EmailLogin[Email Login:<br/>- Email Address<br/>- Password<br/>- Remember Me Option]
+    LoginMethod -->|Phone| PhoneLogin[Phone Login:<br/>- Phone Number<br/>- OTP Verification]
+    LoginMethod -->|Social| SocialLogin[Social Login:<br/>- Google<br/>- Apple<br/>- Facebook]
+    
+    EmailLogin --> EmailValidation[Email Validation:<br/>- Check Email Format<br/>- Verify Account Exists<br/>- Check Account Status]
+    
+    PhoneLogin --> SendOTP[Send OTP:<br/>- SMS Code to Phone<br/>- 6-Digit Code<br/>- 5 Minute Expiry]
+    
+    SocialLogin --> SocialAuth[Social Authentication:<br/>- OAuth Process<br/>- Permission Grant<br/>- Account Linking]
+    
+    EmailValidation --> PasswordCheck[Password Check:<br/>- Verify Password<br/>- Check Account Status<br/>- Security Validation]
+    
+    SendOTP --> OTPInput[OTP Input:<br/>- Enter 6-Digit Code<br/>- Auto-fill Support<br/>- Resend Option]
+    
+    SocialAuth --> SocialResult{Social Auth Result?}
+    SocialResult -->|Success| LinkAccount[Link to Existing Account]
+    SocialResult -->|New User| CreateAccount[Create New Account]
+    
+    PasswordCheck --> LoginResult{Login Result?}
+    OTPInput --> OTPResult{OTP Result?}
+    
+    LoginResult -->|Success| LoadUserData[Load User Data:<br/>- Profile Information<br/>- User Type<br/>- Permissions]
+    LoginResult -->|Failed| LoginError[Login Error:<br/>- Wrong Password<br/>- Account Issues<br/>- Security Lock]
+    
+    OTPResult -->|Success| LoadUserData
+    OTPResult -->|Failed| OTPError[OTP Error:<br/>- Wrong Code<br/>- Expired Code<br/>- Resend Required]
+    
+    LinkAccount --> LoadUserData
+    CreateAccount --> OnboardingFlow[Onboarding Flow]
+    
+    LoadUserData --> Dashboard[Main Dashboard]
+    OnboardingFlow --> Dashboard
+    
+    LoginError --> RetryOptions[Retry Options:<br/>- Try Again<br/>- Forgot Password<br/>- Contact Support]
+    OTPError --> RetryOTP[Retry OTP:<br/>- Resend Code<br/>- Try Again<br/>- Contact Support]
+    
+    RetryOptions --> LoginScreen
+    RetryOTP --> SendOTP
+```
+
+### Password Recovery
+
+```mermaid
+flowchart TD
+    ForgotPassword[Forgot Password] --> RecoveryMethod{Recovery Method?}
+    
+    RecoveryMethod -->|Email| EmailRecovery[Email Recovery:<br/>- Enter Email Address<br/>- Send Reset Link<br/>- Check Email]
+    RecoveryMethod -->|Phone| PhoneRecovery[Phone Recovery:<br/>- Enter Phone Number<br/>- Send OTP<br/>- Verify Identity]
+    
+    EmailRecovery --> SendResetLink[Send Reset Link:<br/>- Email with Reset Link<br/>- 24 Hour Expiry<br/>- Security Token]
+    
+    PhoneRecovery --> SendResetOTP[Send Reset OTP:<br/>- SMS with Reset Code<br/>- 10 Minute Expiry<br/>- One-time Use]
+    
+    SendResetLink --> CheckEmail[Check Email:<br/>- Open Reset Link<br/>- Verify Token<br/>- Access Reset Form]
+    
+    SendResetOTP --> EnterResetOTP[Enter Reset OTP:<br/>- 6-Digit Code<br/>- Verify OTP<br/>- Access Reset Form]
+    
+    CheckEmail --> ResetPassword[Reset Password:<br/>- New Password<br/>- Confirm Password<br/>- Security Requirements]
+    
+    EnterResetOTP --> ResetPassword
+    
+    ResetPassword --> PasswordValidation[Password Validation:<br/>- Check Strength<br/>- Verify Match<br/>- Security Check]
+    
+    PasswordValidation --> ResetResult{Reset Result?}
+    ResetResult -->|Success| PasswordUpdated[Password Updated:<br/>- Login with New Password<br/>- Security Notification<br/>- Session Invalidation]
+    ResetResult -->|Failed| ResetError[Reset Error:<br/>- Weak Password<br/>- Mismatch<br/>- Try Again]
+    
+    PasswordUpdated --> LoginScreen
+    ResetError --> ResetPassword
+```
+
+### PACI Verification (Companies Only)
+
+```mermaid
+flowchart TD
+    PACIVerification[PACI Verification] --> CompanyDocuments[Company Documents:<br/>- Commercial License<br/>- Chamber of Commerce<br/>- Tax Certificate<br/>- Business Registration]
+    
+    CompanyDocuments --> DocumentUpload[Document Upload:<br/>- High Quality Photos<br/>- PDF Files<br/>- Clear Text<br/>- All Pages]
+    
+    DocumentUpload --> DocumentValidation[Document Validation:<br/>- Check Completeness<br/>- Verify Authenticity<br/>- Text Recognition<br/>- Data Extraction]
+    
+    DocumentValidation --> ValidationResult{Validation Result?}
+    ValidationResult -->|Valid| PACIAPI[PACI API Integration:<br/>- Company Name Match<br/>- License Number Check<br/>- Status Verification<br/>- Data Cross-Reference]
+    ValidationResult -->|Invalid| DocumentError[Document Error:<br/>- Missing Information<br/>- Poor Quality<br/>- Request Resubmission]
+    
+    PACIAPI --> PACIResult{PACI Result?}
+    PACIResult -->|Verified| AdminReview[Admin Review:<br/>- Final Verification<br/>- Business Validation<br/>- Approval Process<br/>- Status Update]
+    PACIResult -->|Failed| PACIError[PACI Error:<br/>- Data Mismatch<br/>- Invalid License<br/>- Contact Support]
+    
+    AdminReview --> ReviewDecision{Review Decision?}
+    ReviewDecision -->|Approved| CompanyVerified[Company Verified:<br/>- Full Platform Access<br/>- Equipment Listing<br/>- Driver Management<br/>- Business Features]
+    ReviewDecision -->|Rejected| RejectionReason[Rejection Reason:<br/>- Specific Issues<br/>- Required Actions<br/>- Resubmission Process]
+    
+    CompanyVerified --> Dashboard[Main Dashboard]
+    DocumentError --> DocumentUpload
+    PACIError --> ContactSupport[Contact Support:<br/>- Manual Verification<br/>- Alternative Process<br/>- Support Ticket]
+    RejectionReason --> DocumentUpload
+    ContactSupport --> PACIVerification
+```
+
+### Company Registration Process
+
+```mermaid
+flowchart TD
+    CompanyRegistration[Company Registration] --> CompanyInfo[Company Information:<br/>- Company Name<br/>- Commercial License Number<br/>- Business Type<br/>- Industry Category]
+    
+    CompanyInfo --> ContactDetails[Contact Details:<br/>- Business Email<br/>- Phone Number<br/>- Address<br/>- Website (Optional)]
+    
+    ContactDetails --> AccountSetup[Account Setup:<br/>- Email Address<br/>- Password<br/>- Confirm Password<br/>- Terms & Conditions]
+    
+    AccountSetup --> EmailVerification[Email Verification:<br/>- Send Verification Email<br/>- Click Verification Link<br/>- Verify Email Address]
+    
+    EmailVerification --> PhoneVerification[Phone Verification:<br/>- Send OTP to Phone<br/>- Enter Verification Code<br/>- Verify Phone Number]
+    
+    PhoneVerification --> BusinessProfile[Business Profile:<br/>- Company Description<br/>- Services Offered<br/>- Operating Hours<br/>- Service Areas]
+    
+    BusinessProfile --> DocumentUpload[Document Upload:<br/>- Commercial License<br/>- Chamber of Commerce<br/>- Tax Certificate<br/>- Business Registration]
+    
+    DocumentUpload --> PACIProcess[PACI Verification Process:<br/>- Document Validation<br/>- PACI API Check<br/>- Admin Review<br/>- Approval Status]
+    
+    PACIProcess --> RegistrationComplete[Registration Complete:<br/>- Company Account Created<br/>- Pending Verification<br/>- Limited Access<br/>- Admin Notification]
+    
+    RegistrationComplete --> AdminReview[Admin Review Process:<br/>- Document Verification<br/>- Business Validation<br/>- Background Check<br/>- Final Approval]
+    
+    AdminReview --> ApprovalStatus{Approval Status?}
+    ApprovalStatus -->|Approved| FullAccess[Full Access Granted:<br/>- Complete Platform Access<br/>- Equipment Listing<br/>- Driver Management<br/>- Business Features]
+    ApprovalStatus -->|Rejected| RejectionProcess[Rejection Process:<br/>- Reason Provided<br/>- Required Actions<br/>- Resubmission Process<br/>- Support Contact]
+    
+    FullAccess --> Dashboard[Company Dashboard]
+    RejectionProcess --> DocumentUpload
+```
+
+### Individual Registration Process
+
+```mermaid
+flowchart TD
+    IndividualRegistration[Individual Registration] --> PersonalInfo[Personal Information:<br/>- Full Name<br/>- Phone Number<br/>- Email Address<br/>- Date of Birth]
+    
+    PersonalInfo --> AccountSetup[Account Setup:<br/>- Email Address<br/>- Password<br/>- Confirm Password<br/>- Terms & Conditions]
+    
+    AccountSetup --> EmailVerification[Email Verification:<br/>- Send Verification Email<br/>- Click Verification Link<br/>- Verify Email Address]
+    
+    EmailVerification --> PhoneVerification[Phone Verification:<br/>- Send OTP to Phone<br/>- Enter Verification Code<br/>- Verify Phone Number]
+    
+    PhoneVerification --> ProfileSetup[Profile Setup:<br/>- Address<br/>- Preferences<br/>- Language Selection<br/>- Notification Settings]
+    
+    ProfileSetup --> RegistrationComplete[Registration Complete:<br/>- Individual Account Created<br/>- Basic User Status<br/>- Can Rent Equipment<br/>- No PACI Required]
+    
+    RegistrationComplete --> Dashboard[Individual Dashboard:<br/>- Search Equipment<br/>- My Orders<br/>- Wallet<br/>- Profile Settings]
+```
+
+### User Type Comparison
+
+| Feature | Individual Users | Company Users |
+|---------|------------------|---------------|
+| **Registration** | Simple (Name, Phone, Email) | Complex (Company Details, Documents) |
+| **PACI Verification** | ❌ Not Required | ✅ Required |
+| **Email Login** | ✅ Available | ✅ Available |
+| **Phone Login** | ✅ Available | ✅ Available |
+| **Platform Access** | Basic (Rent Only) | Full (Rent + List Equipment) |
+| **Equipment Listing** | ❌ Not Allowed | ✅ Allowed |
+| **Driver Management** | ❌ Not Available | ✅ Available |
+| **Business Features** | ❌ Not Available | ✅ Available |
+| **Verification Process** | Instant | Admin Review Required |
+| **Account Status** | Basic User | Trusted Company |
 
 ## Equipment Management Flows
 
