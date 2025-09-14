@@ -271,33 +271,6 @@ flowchart TD
     FlagDetails --> NotifyOwner[Notify Owner:<br/>- Flag Notification<br/>- Issue Details<br/>- Required Actions<br/>- Resolution Timeline]
 ```
 
-### Order Management & Dispute Resolution
-
-```mermaid
-flowchart TD
-    OrderManagement[Order Management] --> OrderAction{Order Action?}
-    
-    OrderAction -->|Resolve Dispute| ResolveDispute[Resolve Dispute:<br/>- Review Evidence<br/>- Contact Parties<br/>- Make Decision<br/>- Process Resolution]
-    
-    OrderAction -->|Cancel Order| CancelOrder[Cancel Order:<br/>- Reason<br/>- Refund Amount<br/>- Notify Parties<br/>- Update Status]
-    
-    OrderAction -->|View Order Details| OrderDetails[Order Details:<br/>- Order Information<br/>- Parties Involved<br/>- Payment Status<br/>- Timeline]
-    
-    ResolveDispute --> ReviewEvidence[Review Evidence:<br/>- Order History<br/>- Communication Log<br/>- Photos/Documents<br/>- Testimonies]
-    
-    ReviewEvidence --> ContactParties[Contact Parties:<br/>- Renter<br/>- Owner<br/>- Gather Information<br/>- Clarify Issues]
-    
-    ContactParties --> Investigation[Investigation:<br/>- Analyze Evidence<br/>- Check Policies<br/>- Review Guidelines<br/>- Determine Facts]
-    
-    Investigation --> ResolutionDecision{Resolution Decision?}
-    ResolutionDecision -->|Refund| ProcessRefund[Process Refund:<br/>- Calculate Amount<br/>- Process Payment<br/>- Notify Parties<br/>- Close Dispute]
-    ResolutionDecision -->|Penalty| ApplyPenalty[Apply Penalty:<br/>- Determine Penalty<br/>- Apply to Account<br/>- Notify Parties<br/>- Log Action]
-    ResolutionDecision -->|Mediate| Mediation[Mediate Solution:<br/>- Facilitate Discussion<br/>- Propose Compromise<br/>- Document Agreement<br/>- Monitor Compliance]
-    
-    CancelOrder --> CancellationReason[Cancellation Reason:<br/>- Customer Request<br/>- Equipment Issue<br/>- Payment Problem<br/>- Policy Violation]
-    CancellationReason --> RefundCalculation[Refund Calculation:<br/>- Calculate Amount<br/>- Check Policy<br/>- Determine Fees<br/>- Process Refund]
-    RefundCalculation --> NotifyParties[Notify All Parties:<br/>- Cancellation Notice<br/>- Refund Details<br/>- Next Steps<br/>- Contact Information]
-```
 
 ## Order & Booking Management
 
