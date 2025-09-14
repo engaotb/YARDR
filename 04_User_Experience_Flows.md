@@ -44,17 +44,17 @@ flowchart TD
     UserType -->|Individual| IndividualOnboarding[Individual Onboarding]
     UserType -->|Company| CompanyOnboarding[Company Onboarding]
     
-    IndividualOnboarding --> BasicRegistration[Basic Registration:<br/>- Name<br/>- Phone<br/>- Email<br/>- Password]
+    IndividualOnboarding --> BasicRegistration[Basic Registration:<br/>- Name<br/>- Phone<br/>- Email]
     CompanyOnboarding --> CompanyRegistration[Company Registration:<br/>- Company Name<br/>- License Number<br/>- Contact Info<br/>- Email<br/>- Password]
     
-    BasicRegistration --> PhoneVerification[Phone Verification]
-    CompanyRegistration --> PhoneVerification
+    BasicRegistration --> PhoneVerification[Phone Verification:<br/>- Send OTP to Phone<br/>- Verify Phone Number]
+    CompanyRegistration --> EmailVerification[Email Verification:<br/>- Send Verification Email<br/>- Verify Email Address]
     
-    PhoneVerification --> ProfileSetup[Profile Setup:<br/>- Address<br/>- Preferences<br/>- Language]
+    PhoneVerification --> IndividualProfileSetup[Individual Profile Setup:<br/>- Address<br/>- Preferences<br/>- Language]
+    EmailVerification --> CompanyProfileSetup[Company Profile Setup:<br/>- Business Address<br/>- Service Areas<br/>- Operating Hours]
     
-    ProfileSetup --> UserTypeCheck{User Type?}
-    UserTypeCheck -->|Individual| IndividualComplete[Individual Registration Complete:<br/>- Basic User Status<br/>- Can Rent Equipment<br/>- No PACI Required<br/>- Login with Phone + OTP]
-    UserTypeCheck -->|Company| CompanyComplete[Company Registration Complete:<br/>- Pending Verification<br/>- Limited Access<br/>- Login with Email + Password<br/>- PACI Verification Required]
+    IndividualProfileSetup --> IndividualComplete[Individual Registration Complete:<br/>- Basic User Status<br/>- Can Rent Equipment<br/>- No PACI Required<br/>- Login with Phone + OTP]
+    CompanyProfileSetup --> CompanyComplete[Company Registration Complete:<br/>- Pending Verification<br/>- Limited Access<br/>- Login with Email + Password<br/>- PACI Verification Required]
     
     IndividualComplete --> IndividualDashboard[Individual Dashboard:<br/>- Search Equipment<br/>- My Orders<br/>- Wallet<br/>- Profile Settings]
     CompanyComplete --> CompanyDashboard[Company Dashboard:<br/>- Pending Verification<br/>- Upload Documents<br/>- PACI Verification<br/>- Limited Features]
