@@ -11,8 +11,7 @@
 8. [Admin Dashboard Journey](#admin-dashboard-journey)
 9. [Communication & Support](#communication--support)
 10. [Settings & Profile Management](#settings--profile-management)
-11. [Error Handling & Edge Cases](#error-handling--edge-cases)
-12. [User Experience Considerations](#user-experience-considerations)
+11. [User Experience Considerations](#user-experience-considerations)
 
 ## System Overview & User Roles
 
@@ -510,78 +509,6 @@ flowchart TD
     FleetSettings --> DriverSettings[Driver Settings:<br/>- Driver List<br/>- Assignment Rules<br/>- Performance Tracking<br/>- Contact Management]
 ```
 
-## Error Handling & Edge Cases
-
-### Error Flow Management
-
-```mermaid
-flowchart TD
-    ErrorOccurs[Error Occurs] --> ErrorType{Error Type?}
-    
-    ErrorType -->|Network Error| NetworkError[Network Error:<br/>- Check Connection<br/>- Retry Action<br/>- Offline Mode<br/>- Sync When Online]
-    
-    ErrorType -->|Payment Error| PaymentError[Payment Error:<br/>- Retry Payment<br/>- Alternative Method<br/>- Contact Support<br/>- Refund Process]
-    
-    ErrorType -->|Validation Error| ValidationError[Validation Error:<br/>- Show Error Message<br/>- Highlight Fields<br/>- Provide Guidance<br/>- Auto-correct]
-    
-    ErrorType -->|System Error| SystemError[System Error:<br/>- Log Error<br/>- Show Generic Message<br/>- Report Bug<br/>- Fallback Action]
-    
-    ErrorType -->|Authentication Error| AuthError[Authentication Error:<br/>- Redirect to Login<br/>- Clear Session<br/>- Show Message<br/>- Refresh Token]
-    
-    NetworkError --> RetryAction[Retry Action]
-    RetryAction --> Success{Success?}
-    Success -->|Yes| ContinueFlow[Continue Flow]
-    Success -->|No| OfflineMode[Offline Mode:<br/>- Limited Features<br/>- Queue Actions<br/>- Sync Later]
-    
-    PaymentError --> PaymentRetry[Payment Retry]
-    PaymentRetry --> PaymentSuccess{Success?}
-    PaymentSuccess -->|Yes| PaymentComplete[Payment Complete]
-    PaymentSuccess -->|No| AlternativePayment[Alternative Payment:<br/>- Different Method<br/>- Contact Support<br/>- Manual Process]
-    
-    ValidationError --> ShowError[Show Error Message]
-    ShowError --> UserCorrection[User Correction]
-    UserCorrection --> ValidationCheck[Validation Check]
-    ValidationCheck --> Valid{Valid?}
-    Valid -->|Yes| ContinueFlow
-    Valid -->|No| ShowError
-    
-    SystemError --> LogError[Log Error]
-    LogError --> GenericMessage[Show Generic Message]
-    GenericMessage --> FallbackAction[Fallback Action:<br/>- Basic Functionality<br/>- Contact Support<br/>- Try Again Later]
-    
-    AuthError --> RedirectLogin[Redirect to Login]
-    RedirectLogin --> LoginFlow[Login Flow]
-    LoginFlow --> AuthSuccess{Success?}
-    AuthSuccess -->|Yes| ContinueFlow
-    AuthSuccess -->|No| AuthError
-```
-
-### Edge Cases Handling
-
-```mermaid
-flowchart TD
-    EdgeCase[Edge Case] --> CaseType{Case Type?}
-    
-    CaseType -->|No Data| EmptyState[Empty State:<br/>- Show Empty Message<br/>- Provide Action Button<br/>- Show Guidance<br/>- Suggest Alternatives]
-    
-    CaseType -->|Loading| LoadingState[Loading State:<br/>- Show Loading Indicator<br/>- Show Progress<br/>- Handle Timeout<br/>- Provide Cancel Option]
-    
-    CaseType -->|Offline| OfflineState[Offline State:<br/>- Show Offline Message<br/>- Enable Offline Features<br/>- Queue Actions<br/>- Sync When Online]
-    
-    CaseType -->|Maintenance| MaintenanceState[Maintenance State:<br/>- Show Maintenance Message<br/>- Show ETA<br/>- Contact Information<br/>- Alternative Options]
-    
-    CaseType -->|Rate Limited| RateLimitState[Rate Limit State:<br/>- Show Rate Limit Message<br/>- Show Retry Time<br/>- Suggest Alternative<br/>- Contact Support]
-    
-    EmptyState --> ProvideAction[Provide Action:<br/>- Add Equipment<br/>- Search Again<br/>- Browse Categories<br/>- Contact Support]
-    
-    LoadingState --> TimeoutHandling[Timeout Handling:<br/>- Show Timeout Message<br/>- Retry Option<br/>- Contact Support<br/>- Alternative Action]
-    
-    OfflineState --> QueueActions[Queue Actions:<br/>- Save for Later<br/>- Sync When Online<br/>- Offline Features<br/>- Status Updates]
-    
-    MaintenanceState --> ShowETA[Show ETA:<br/>- Estimated Time<br/>- Progress Updates<br/>- Contact Information<br/>- Alternative Services]
-    
-    RateLimitState --> ShowRetryTime[Show Retry Time:<br/>- Countdown Timer<br/>- Retry Button<br/>- Alternative Actions<br/>- Contact Support]
-```
 
 ## User Experience Considerations
 
