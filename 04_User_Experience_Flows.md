@@ -1,606 +1,484 @@
-# YARDR - Complete User Experience Flows
+# YARDR - Professional User Experience Flows
 
 ## Table of Contents
-1. [Complete Renter Journey](#complete-renter-journey)
-2. [Complete Owner Journey](#complete-owner-journey)
-3. [Complete Driver Journey](#complete-driver-journey)
-4. [Complete Admin Journey](#complete-admin-journey)
-5. [App Navigation Flows](#app-navigation-flows)
-6. [Settings & Profile Management](#settings--profile-management)
-7. [Notification System](#notification-system)
-8. [Help & Support System](#help--support-system)
-9. [Error Handling & Edge Cases](#error-handling--edge-cases)
-10. [Offline Capabilities](#offline-capabilities)
-11. [Key User Flow Patterns](#key-user-flow-patterns)
+1. [System Overview & User Roles](#system-overview--user-roles)
+2. [YARDR Unified App Journey](#yardr-unified-app-journey)
+3. [Admin Dashboard Journey](#admin-dashboard-journey)
+4. [Equipment Management Flows](#equipment-management-flows)
+5. [Order & Booking Management](#order--booking-management)
+6. [Payment & Financial Flows](#payment--financial-flows)
+7. [AI Assistant & Smart Features](#ai-assistant--smart-features)
+8. [Tracking & Delivery System](#tracking--delivery-system)
+9. [Communication & Support](#communication--support)
+10. [Settings & Profile Management](#settings--profile-management)
+11. [Error Handling & Edge Cases](#error-handling--edge-cases)
 12. [User Experience Considerations](#user-experience-considerations)
-13. [Success Metrics](#success-metrics)
 
-## Complete Renter Journey
+## System Overview & User Roles
+
+### Platform Architecture
+YARDR is a unified heavy equipment rental platform with two main applications:
+- **YARDR App**: Unified app for both individuals and companies
+- **Admin Dashboard**: Web-based management interface
+
+### User Roles
+1. **Individual Users**: Rent equipment for personal projects
+2. **Company Users**: Manage fleet, rent equipment, handle business operations
+3. **Administrators**: Platform oversight, user management, dispute resolution
+
+---
+
+## YARDR Unified App Journey
+
+### Initial App Launch & User Type Selection
 
 ```mermaid
 flowchart TD
-    Start([User Opens App]) --> FirstTime{First Time?}
+    Start([App Launch]) --> FirstTime{First Time User?}
     
-    FirstTime -->|Yes| Onboarding[Onboarding Screens]
+    FirstTime -->|Yes| Welcome[Welcome Screen]
     FirstTime -->|No| AuthCheck{Authenticated?}
     
-    Onboarding --> Registration[Registration]
-    Registration --> PhoneVerify[Phone Verification]
-    PhoneVerify --> ProfileSetup[Profile Setup]
-    ProfileSetup --> PACIOption{PACI Verification?}
+    Welcome --> UserType{Select User Type}
+    UserType -->|Individual| IndividualOnboarding[Individual Onboarding]
+    UserType -->|Company| CompanyOnboarding[Company Onboarding]
     
-    PACIOption -->|Yes| PACIFlow[PACI Verification Flow]
+    IndividualOnboarding --> BasicRegistration[Basic Registration:<br/>- Name<br/>- Phone<br/>- Email]
+    CompanyOnboarding --> CompanyRegistration[Company Registration:<br/>- Company Name<br/>- License Number<br/>- Contact Info]
+    
+    BasicRegistration --> PhoneVerification[Phone Verification]
+    CompanyRegistration --> PhoneVerification
+    
+    PhoneVerification --> ProfileSetup[Profile Setup:<br/>- Address<br/>- Preferences<br/>- Language]
+    
+    ProfileSetup --> PACIOption{PACI Verification?}
+    PACIOption -->|Yes| PACIFlow[PACI Verification]
     PACIOption -->|No| BasicUser[Basic User Status]
     
     PACIFlow --> TrustedUser[Trusted User Status]
-    
-    BasicUser --> Dashboard
+    BasicUser --> Dashboard[Main Dashboard]
     TrustedUser --> Dashboard
+    
     AuthCheck -->|Yes| Dashboard
     AuthCheck -->|No| Login[Login Screen]
-    Login --> Dashboard[Renter Dashboard]
-    
-    Dashboard --> Action{User Action}
-    
-    Action -->|Search| SearchMethod{Search Type}
-    Action -->|Orders| OrdersList[My Orders]
-    Action -->|Wallet| WalletScreen[Wallet Management]
-    Action -->|Profile| ProfileScreen[Profile Settings]
-    
-    SearchMethod -->|Manual| ManualSearch[Browse Categories]
-    SearchMethod -->|AI| AIAssistant[AI Chat Interface]
-    
-    AIAssistant --> DescribeProblem[Describe Task/Problem]
-    DescribeProblem --> AIProcessing[AI Analysis]
-    AIProcessing --> Recommendations[Equipment Recommendations]
-    Recommendations --> SelectEquipment
-    
-    ManualSearch --> Filters[Apply Filters]
-    Filters --> Results[Search Results]
-    Results --> SelectEquipment[Select Equipment]
-    
-    SelectEquipment --> EquipmentDetails[View Details]
-    EquipmentDetails --> CheckAvailability[Check Availability]
-    CheckAvailability --> CreateBooking[Create Booking]
-    
-    CreateBooking --> SpecifyDetails[Specify:<br/>- Location<br/>- Duration<br/>- Services]
-    SpecifyDetails --> ReviewOrder[Review Order]
-    ReviewOrder --> CheckWallet{Sufficient Balance?}
-    
-    CheckWallet -->|No| AddFunds[Add Funds]
-    CheckWallet -->|Yes| ConfirmOrder[Confirm Order]
-    
-    AddFunds --> PaymentMethod{Payment Method}
-    PaymentMethod -->|MyFatoorah| MyFatoorahFlow[MyFatoorah Payment]
-    
-    MyFatoorahFlow --> PaymentProcess[Process Payment]
-    
-    PaymentProcess --> PaymentResult{Result}
-    PaymentResult -->|Success| WalletUpdated[Wallet Updated]
-    PaymentResult -->|Failed| PaymentError[Error Handling]
-    
-    PaymentError --> PaymentMethod
-    WalletUpdated --> ConfirmOrder
-    
-    ConfirmOrder --> OrderSubmitted[Order Submitted]
-    OrderSubmitted --> WaitingApproval[Waiting for Owner]
-    
-    WaitingApproval --> OwnerResponse{Owner Response}
-    OwnerResponse -->|Accepted| OrderActive[Order Active]
-    OwnerResponse -->|Rejected| FindAlternative[Find Alternative]
-    
-    FindAlternative --> SearchMethod
-    
-    OrderActive --> TrackOrder[Track Order]
-    TrackOrder --> EquipmentDelivered[Equipment Delivered]
-    EquipmentDelivered --> UseEquipment[Use Equipment]
-    UseEquipment --> RentalComplete[Rental Complete]
-    RentalComplete --> RateExperience[Rate & Review]
-    RateExperience --> ViewInvoice[View Invoice]
-    ViewInvoice --> End([Journey Complete])
+    Login --> Dashboard
 ```
 
-## Complete Owner Journey
+### Main Dashboard Navigation
 
 ```mermaid
 flowchart TD
-    Start([Owner Opens App]) --> OwnerAuth{Registered?}
+    Dashboard[Main Dashboard] --> UserType{User Type?}
     
-    OwnerAuth -->|No| OwnerSignup[Company Registration]
-    OwnerAuth -->|Yes| OwnerDash[Owner Dashboard]
+    UserType -->|Individual| IndividualDashboard[Individual Dashboard:<br/>- Search Equipment<br/>- My Orders<br/>- Wallet<br/>- Profile]
     
-    OwnerSignup --> CompanyInfo[Enter Company Info]
-    CompanyInfo --> UploadDocs[Upload Documents:<br/>- License<br/>- Insurance<br/>- Bank Details]
-    UploadDocs --> AdminReview[Admin Review]
-    AdminReview --> ApprovalStatus{Status}
+    UserType -->|Company| CompanyDashboard[Company Dashboard:<br/>- Fleet Management<br/>- Orders<br/>- Analytics<br/>- Driver Management]
     
-    ApprovalStatus -->|Approved| OwnerDash
-    ApprovalStatus -->|Rejected| FixIssues[Fix Issues]
-    ApprovalStatus -->|Pending| WaitApproval[Wait]
+    IndividualDashboard --> IndividualAction{Action?}
+    IndividualAction -->|Search| EquipmentSearch[Search Equipment]
+    IndividualAction -->|Orders| MyOrders[My Orders]
+    IndividualAction -->|Wallet| Wallet[Wallet Management]
+    IndividualAction -->|Profile| Profile[Profile Settings]
     
-    FixIssues --> UploadDocs
-    WaitApproval --> AdminReview
-    
-    OwnerDash --> OwnerAction{Action}
-    
-    OwnerAction -->|Fleet| FleetMgmt[Fleet Management]
-    OwnerAction -->|Orders| OrderMgmt[Order Management]
-    OwnerAction -->|Drivers| DriverMgmt[Driver Management]
-    OwnerAction -->|Revenue| RevenueDash[Revenue Dashboard]
-    OwnerAction -->|Analytics| Analytics[Analytics]
-    
-    FleetMgmt --> FleetAction{Fleet Action}
-    FleetAction -->|Add| AddEquipment[Add Equipment]
-    FleetAction -->|Edit| EditEquipment[Edit Equipment]
-    FleetAction -->|View| ViewFleet[View Fleet]
-    
-    AddEquipment --> BasicInfo[Equipment Info]
-    BasicInfo --> Specifications[Add Specifications]
-    Specifications --> Pricing[Set Pricing]
-    Pricing --> Photos[Upload Photos]
-    Photos --> Documents[Upload Documents]
-    Documents --> AssignDriver{Assign Driver?}
-    
-    AssignDriver -->|Yes| SelectDriver[Select Driver]
-    AssignDriver -->|No| SelfOperated[Self-Operated]
-    
-    SelectDriver --> SaveEquipment
-    SelfOperated --> SaveEquipment[Save Equipment]
-    SaveEquipment --> FleetMgmt
-    
-    OrderMgmt --> IncomingOrders[View Incoming Orders]
-    IncomingOrders --> ReviewOrder[Review Order Details]
-    ReviewOrder --> OrderDecision{Decision}
-    
-    OrderDecision -->|Accept| AcceptOrder[Accept Order]
-    OrderDecision -->|Reject| RejectOrder[Reject Order]
-    OrderDecision -->|Negotiate| NegotiatePrice[Counter Offer]
-    
-    AcceptOrder --> AssignToDriver[Assign to Driver]
-    AssignToDriver --> NotifyDriver[Notify Driver]
-    NotifyDriver --> MonitorProgress[Monitor Progress]
-    
-    MonitorProgress --> TrackingView[View Tracking]
-    TrackingView --> OrderStatus{Status}
-    
-    OrderStatus -->|In Progress| MonitorProgress
-    OrderStatus -->|Completed| CompleteOrder[Complete Order]
-    
-    CompleteOrder --> GenerateReport[Usage Report]
-    GenerateReport --> ReceivePayment[Receive Payment]
-    ReceivePayment --> UpdateRecords[Update Records]
-    UpdateRecords --> End([Process Complete])
-    
-    DriverMgmt --> DriverAction{Driver Action}
-    DriverAction -->|Add| AddDriver[Add Driver]
-    DriverAction -->|Manage| ManageDrivers[Manage Drivers]
-    
-    AddDriver --> DriverInfo[Driver Information]
-    DriverInfo --> DriverDocs[Upload Documents:<br/>- License<br/>- ID<br/>- Gate Pass]
-    DriverDocs --> SendInvite[Send App Invite]
-    SendInvite --> DriverMgmt
+    CompanyDashboard --> CompanyAction{Action?}
+    CompanyAction -->|Fleet| FleetManagement[Fleet Management]
+    CompanyAction -->|Orders| OrderManagement[Order Management]
+    CompanyAction -->|Analytics| Analytics[Analytics & Reports]
+    CompanyAction -->|Drivers| DriverManagement[Driver Management]
+    CompanyAction -->|Profile| CompanyProfile[Company Profile]
 ```
 
-## Complete Driver Journey
+## Equipment Management Flows
+
+### Equipment Search & Discovery
 
 ```mermaid
 flowchart TD
-    Start([Driver Receives Invite]) --> InstallApp[Install Driver App]
-    InstallApp --> RegisterPhone[Register with Phone]
-    RegisterPhone --> VerifyOTP[Verify OTP]
-    VerifyOTP --> LinkCompany[Link to Company]
-    LinkCompany --> DriverProfile[Complete Profile]
+    EquipmentSearch[Equipment Search] --> SearchMethod{Search Method?}
     
-    DriverProfile --> UploadDocuments[Upload Documents:<br/>- License<br/>- Civil ID<br/>- Gate Pass]
-    UploadDocuments --> Verification[Verification Process]
-    Verification --> DriverReady[Driver Ready Status]
+    SearchMethod -->|AI Assistant| AIAssistant[AI Assistant Chat]
+    SearchMethod -->|Manual Search| ManualSearch[Manual Search]
+    SearchMethod -->|Browse Categories| CategoryBrowse[Browse Categories]
     
-    DriverReady --> DriverDash[Driver Dashboard]
-    DriverDash --> Status{Availability Status}
+    AIAssistant --> DescribeTask[Describe Your Task:<br/>- Project Type<br/>- Requirements<br/>- Duration<br/>- Location]
+    DescribeTask --> AIAnalysis[AI Analysis:<br/>- Process Requirements<br/>- Match Equipment<br/>- Generate Recommendations]
+    AIAnalysis --> AIRecommendations[AI Recommendations:<br/>- Equipment List<br/>- Explanations<br/>- Pricing Estimates]
     
-    Status -->|Available| WaitAssignment[Wait for Assignment]
-    Status -->|Busy| CurrentJob[Current Job]
-    Status -->|Off Duty| OffDuty[Off Duty]
+    ManualSearch --> SearchFilters[Apply Filters:<br/>- Category<br/>- Price Range<br/>- Location<br/>- Availability]
+    SearchFilters --> SearchResults[Search Results]
     
-    WaitAssignment --> ReceiveNotification[Receive Assignment]
-    ReceiveNotification --> ReviewAssignment[Review Details:<br/>- Equipment<br/>- Location<br/>- Duration<br/>- Customer]
+    CategoryBrowse --> CategoryList[Category List:<br/>- Earth Moving<br/>- Lifting<br/>- Concrete<br/>- Hauling]
+    CategoryList --> CategoryEquipment[Category Equipment List]
     
-    ReviewAssignment --> AcceptDecline{Decision}
-    AcceptDecline -->|Accept| AcceptAssignment[Accept Assignment]
-    AcceptDecline -->|Decline| DeclineReason[Provide Reason]
+    AIRecommendations --> SelectEquipment[Select Equipment]
+    SearchResults --> SelectEquipment
+    CategoryEquipment --> SelectEquipment
     
-    DeclineReason --> WaitAssignment
-    
-    AcceptAssignment --> Preparation[Prepare for Trip:<br/>- Check Equipment<br/>- Review Route<br/>- Contact Customer]
-    Preparation --> StartTrip[Start Trip]
-    
-    StartTrip --> EnableTracking[Enable GPS Tracking]
-    EnableTracking --> Navigate[Navigate to Customer]
-    Navigate --> ArriveLocation[Arrive at Location]
-    
-    ArriveLocation --> CustomerMeet[Meet Customer]
-    CustomerMeet --> EquipmentHandover[Equipment Handover]
-    
-    EquipmentHandover --> JobType{Job Type}
-    JobType -->|Operated| OperateEquipment[Operate Equipment]
-    JobType -->|Delivery Only| LeaveEquipment[Leave Equipment]
-    
-    OperateEquipment --> WorkInProgress[Work in Progress]
-    WorkInProgress --> WorkComplete[Work Complete]
-    
-    LeaveEquipment --> SchedulePickup[Schedule Pickup]
-    SchedulePickup --> WaitPickup[Wait for Pickup Date]
-    WaitPickup --> ReturnTrip[Return Trip]
-    
-    WorkComplete --> EndTrip[End Trip]
-    ReturnTrip --> EndTrip
-    
-    EndTrip --> Documentation[Upload Documents:<br/>- Gate Pass<br/>- Photos<br/>- Customer Signature]
-    Documentation --> SubmitReport[Submit Trip Report]
-    SubmitReport --> PaymentPending[Payment Pending]
-    PaymentPending --> ReceivePayment[Receive Payment]
-    ReceivePayment --> DriverDash
+    SelectEquipment --> EquipmentDetails[Equipment Details:<br/>- Specifications<br/>- Photos<br/>- Pricing<br/>- Availability<br/>- Reviews]
 ```
 
-## Complete Admin Journey
+### Equipment Registration Flow
 
 ```mermaid
 flowchart TD
-    Start([Admin Login]) --> TwoFA[Two-Factor Authentication]
-    TwoFA --> AdminDash[Admin Dashboard]
+    AddEquipment[Add New Equipment] --> EquipmentInfo[Equipment Information:<br/>- Equipment Name<br/>- Category<br/>- Model & Year<br/>- Capacity<br/>- Location<br/>- Description]
     
-    AdminDash --> ViewMetrics[Platform Metrics:<br/>- Users: 1,247<br/>- Revenue: $48.2K<br/>- Orders: 342<br/>- Disputes: 3]
+    EquipmentInfo --> Specifications[Add Specifications:<br/>- Technical Details<br/>- Features<br/>- Attachments<br/>- Dimensions]
     
-    ViewMetrics --> AdminAction{Select Action}
+    Specifications --> Pricing[Set Pricing:<br/>- Daily Rate<br/>- Hourly Rate<br/>- Weekly Rate<br/>- Monthly Rate<br/>- Delivery Fee<br/>- Operator Fee]
     
-    AdminAction -->|Users| UserMgmt[User Management]
-    AdminAction -->|Companies| CompanyMgmt[Company Management]
-    AdminAction -->|Orders| OrderOversight[Order Oversight]
-    AdminAction -->|Disputes| DisputeMgmt[Dispute Management]
-    AdminAction -->|Analytics| PlatformAnalytics[Analytics]
-    AdminAction -->|Settings| SystemSettings[System Settings]
+    Pricing --> Photos[Upload Photos:<br/>- Multiple Angles<br/>- Equipment Condition<br/>- Attachments<br/>- Documentation]
     
-    UserMgmt --> UserAction{User Action}
-    UserAction -->|Verify| VerifyUser[Verify Documents]
-    UserAction -->|Suspend| SuspendUser[Suspend Account]
-    UserAction -->|Edit| EditUser[Edit Information]
+    Photos --> Documents[Upload Documents:<br/>- Insurance Certificate<br/>- Registration<br/>- Maintenance Records<br/>- Inspection Reports]
     
-    VerifyUser --> ReviewDocuments[Review Documents]
-    ReviewDocuments --> VerifyDecision{Decision}
-    VerifyDecision -->|Approve| ApproveUser[Approve & Notify]
-    VerifyDecision -->|Reject| RejectUser[Reject & Notify]
-    VerifyDecision -->|Request Info| RequestInfo[Request More Info]
+    Documents --> DriverAssignment{Assign Driver?}
+    DriverAssignment -->|Yes| SelectDriver[Select Driver:<br/>- Available Drivers<br/>- Driver Details<br/>- Contact Information]
+    DriverAssignment -->|No| SelfOperated[Self-Operated Equipment]
     
-    CompanyMgmt --> CompanyAction{Company Action}
-    CompanyAction -->|Review| ReviewCompany[Review Application]
-    CompanyAction -->|Monitor| MonitorCompany[Monitor Activity]
-    CompanyAction -->|Audit| AuditCompany[Audit Records]
+    SelectDriver --> SaveEquipment[Save Equipment]
+    SelfOperated --> SaveEquipment
     
-    OrderOversight --> OrderView[View All Orders]
-    OrderView --> FilterOrders[Filter & Search]
-    FilterOrders --> OrderDetails[Order Details]
-    OrderDetails --> OrderIntervention{Need Intervention?}
+    SaveEquipment --> AdminReview[Admin Review:<br/>- Document Verification<br/>- Equipment Validation<br/>- Quality Check<br/>- Approval Process]
     
-    OrderIntervention -->|Yes| InterventionAction[Take Action:<br/>- Contact Parties<br/>- Modify Order<br/>- Cancel Order]
-    OrderIntervention -->|No| OrderView
-    
-    DisputeMgmt --> DisputeQueue[Dispute Queue]
-    DisputeQueue --> ReviewDispute[Review Dispute:<br/>- Evidence<br/>- Communication<br/>- History]
-    
-    ReviewDispute --> Investigation[Investigate:<br/>- Contact Parties<br/>- Review GPS Data<br/>- Check Documents]
-    Investigation --> Resolution{Resolution}
-    
-    Resolution -->|Refund| ProcessRefund[Process Refund]
-    Resolution -->|Penalty| ApplyPenalty[Apply Penalty]
-    Resolution -->|Mediate| Mediation[Mediate Solution]
-    
-    ProcessRefund --> NotifyParties[Notify All Parties]
-    ApplyPenalty --> NotifyParties
-    Mediation --> NotifyParties
-    NotifyParties --> CloseDispute[Close Dispute]
-    CloseDispute --> DisputeQueue
-    
-    PlatformAnalytics --> SelectReport{Report Type}
-    SelectReport -->|Revenue| RevenueReport[Revenue Analytics]
-    SelectReport -->|Users| UserReport[User Analytics]
-    SelectReport -->|Equipment| EquipmentReport[Equipment Analytics]
-    SelectReport -->|Geographic| GeoReport[Geographic Analytics]
-    
-    RevenueReport --> ExportData[Export Data]
-    UserReport --> ExportData
-    EquipmentReport --> ExportData
-    GeoReport --> ExportData
-    
-    ExportData --> GenerateReport[Generate Report]
-    GenerateReport --> DownloadReport[Download CSV/PDF]
-    DownloadReport --> AdminDash
+    AdminReview --> ReviewResult{Review Result?}
+    ReviewResult -->|Approved| EquipmentLive[Equipment Live:<br/>- Available for Rent<br/>- Searchable<br/>- Bookable]
+    ReviewResult -->|Rejected| FixIssues[Fix Issues:<br/>- Review Comments<br/>- Update Information<br/>- Resubmit]
 ```
 
-## Key User Flow Patterns
+## Tracking & Delivery System
 
-### Authentication Flow
-
-1. **First Time User**
-   - App launch → Onboarding screens
-   - Registration form → Phone verification
-   - Profile setup → Optional PACI verification
-   - Role selection → Dashboard access
-
-2. **Returning User**
-   - App launch → Authentication check
-   - Login screen → Credential validation
-   - Role detection → Appropriate dashboard
-
-3. **Role-based Routing**
-   - Renter → Renter dashboard
-   - Owner → Owner dashboard
-   - Driver → Driver dashboard
-   - Admin → Admin dashboard
-
-### Equipment Discovery Flow
-
-1. **AI-Assisted Search**
-   - User describes task → AI analysis
-   - Equipment matching → Recommendations
-   - User selects equipment → Details view
-
-2. **Manual Search**
-   - Category selection → Filter application
-   - Results display → Equipment comparison
-   - User selects equipment → Details view
-
-### Order Management Flow
-
-1. **Order Creation**
-   - Equipment selection → Booking details
-   - Payment processing → Order confirmation
-   - Owner notification → Response handling
-
-2. **Order Fulfillment**
-   - Driver assignment → Trip execution
-   - Real-time tracking → Completion
-   - Payment release → Rating system
-
-### Payment Flow
-
-1. **Wallet Management**
-   - Balance check → Payment method selection
-   - External payment → Wallet top-up
-   - Transaction recording → Balance update
-
-2. **Order Payment**
-   - Order creation → Payment calculation
-   - Payment processing → Confirmation
-   - Invoice generation → Delivery
-
-### Notification Flow
-
-1. **Real-time Updates**
-   - Event trigger → Notification creation
-   - Multi-channel delivery → User notification
-   - Action handling → Status update
-
-2. **Push Notifications**
-   - Device token management → Message targeting
-   - Delivery confirmation → Read status tracking
-   - Deep linking → Screen navigation
-
-## User Experience Considerations
-
-### Onboarding Experience
-
-- **Progressive Disclosure**: Information revealed step-by-step
-- **Clear Value Proposition**: Benefits explained early
-- **Minimal Friction**: Reduced form fields and steps
-- **Visual Guidance**: Clear progress indicators
-
-### Error Handling
-
-- **Graceful Degradation**: System continues with reduced functionality
-- **Clear Error Messages**: User-friendly error descriptions
-- **Recovery Options**: Clear paths to resolve issues
-- **Support Access**: Easy contact with support team
-
-### Accessibility
-
-- **Screen Reader Support**: Voice-over compatibility
-- **High Contrast**: Visual accessibility options
-- **Large Text**: Scalable font sizes
-- **Keyboard Navigation**: Full keyboard accessibility
-
-### Performance
-
-- **Fast Loading**: Optimized initial load times
-- **Offline Support**: Core functionality without internet
-- **Smooth Animations**: 60fps transitions
-- **Battery Optimization**: Efficient resource usage
-
-## Success Metrics
-
-### User Engagement
-- **Daily Active Users**: Platform usage frequency
-- **Session Duration**: Time spent in app
-- **Feature Adoption**: Usage of key features
-- **Retention Rates**: User return frequency
-
-### Business Metrics
-- **Order Completion Rate**: Successful transactions
-- **Revenue per User**: Average spending
-- **Equipment Utilization**: Asset usage rates
-- **Customer Satisfaction**: Rating scores
-
-### Technical Metrics
-- **App Performance**: Load times and responsiveness
-- **Error Rates**: System reliability
-- **Uptime**: Platform availability
-- **Response Times**: API performance
-
----
-
-## App Navigation Flows
-
-### Renter App Navigation
+### Simple Point-to-Point Tracking
 
 ```mermaid
 flowchart TD
-    TabBar[Bottom Tab Bar] --> Home[Home Tab]
-    TabBar --> Search[Search Tab]
-    TabBar --> Orders[Orders Tab]
-    TabBar --> Wallet[Wallet Tab]
-    TabBar --> Profile[Profile Tab]
+    OrderAccepted[Order Accepted] --> DriverAssignment[Driver Assignment:<br/>- Select Available Driver<br/>- Driver Contact Info<br/>- Assignment Details]
     
-    Home --> Dashboard[Dashboard Screen]
-    Home --> QuickActions[Quick Actions]
-    Home --> ActiveRentals[Active Rentals]
-    Home --> Categories[Equipment Categories]
+    DriverAssignment --> DriverNotification[Driver Notification:<br/>- SMS/Phone Call<br/>- Assignment Details<br/>- Equipment Info<br/>- Customer Contact]
     
-    Search --> SearchBar[Search Interface]
-    Search --> Filters[Advanced Filters]
-    Search --> MapView[Map View]
-    Search --> ListView[List View]
-    Search --> SavedSearches[Saved Searches]
+    DriverNotification --> DriverConfirmation{Driver Confirms?}
+    DriverConfirmation -->|Yes| DeliveryScheduled[Delivery Scheduled:<br/>- Point A: Equipment Location<br/>- Point B: Delivery Location<br/>- Estimated Time<br/>- Driver Details]
+    DriverConfirmation -->|No| FindAlternativeDriver[Find Alternative Driver]
     
-    Orders --> OrderList[My Orders List]
-    Orders --> OrderDetails[Order Details]
-    Orders --> OrderTracking[Order Tracking]
-    Orders --> OrderHistory[Order History]
+    FindAlternativeDriver --> DriverAssignment
     
-    Wallet --> Balance[Wallet Balance]
-    Wallet --> Transactions[Transaction History]
-    Wallet --> AddFunds[Add Funds]
-    Wallet --> PaymentMethods[Payment Methods]
+    DeliveryScheduled --> TrackingMap[Tracking Map Display:<br/>- Point A to Point B Route<br/>- Driver Status<br/>- Estimated Arrival<br/>- No GPS Tracking]
     
-    Profile --> ProfileInfo[Profile Information]
-    Profile --> Settings[Settings]
-    Profile --> Notifications[Notifications]
-    Profile --> Help[Help & Support]
-    Profile --> About[About App]
+    TrackingMap --> DeliveryStatus{Delivery Status?}
+    DeliveryStatus -->|In Transit| InTransit[In Transit:<br/>- Driver En Route<br/>- Estimated Time<br/>- Customer Notification]
+    DeliveryStatus -->|Delivered| Delivered[Delivered:<br/>- Driver Confirmation<br/>- Customer Signature<br/>- Photos Uploaded]
+    DeliveryStatus -->|Delayed| Delayed[Delayed:<br/>- Reason Provided<br/>- New ETA<br/>- Customer Notification]
+    
+    InTransit --> DeliveryUpdate[Delivery Update:<br/>- Status Change<br/>- Time Update<br/>- Customer Notification]
+    DeliveryUpdate --> DeliveryStatus
+    
+    Delivered --> RentalStart[Rental Period Starts:<br/>- Equipment Handover<br/>- Usage Instructions<br/>- Support Contact]
+    
+    Delayed --> DelayReason[Delay Reason:<br/>- Traffic<br/>- Equipment Issue<br/>- Driver Issue<br/>- Other]
+    DelayReason --> NewETA[New ETA:<br/>- Updated Time<br/>- Customer Notification<br/>- Tracking Update]
+    NewETA --> DeliveryStatus
 ```
 
-### Owner App Navigation
+### Driver Management (Company Side)
 
 ```mermaid
 flowchart TD
-    TabBar[Bottom Tab Bar] --> Dashboard[Dashboard Tab]
-    TabBar --> Fleet[Fleet Tab]
-    TabBar --> Orders[Orders Tab]
-    TabBar --> Revenue[Revenue Tab]
-    TabBar --> Profile[Profile Tab]
+    DriverManagement[Driver Management] --> DriverAction{Driver Action?}
     
-    Dashboard --> Overview[Fleet Overview]
-    Dashboard --> Stats[Performance Stats]
-    Dashboard --> Alerts[System Alerts]
-    Dashboard --> QuickActions[Quick Actions]
+    DriverAction -->|Add Driver| AddDriver[Add New Driver:<br/>- Full Name<br/>- Phone Number<br/>- License Details<br/>- Contact Information]
     
-    Fleet --> EquipmentList[Equipment List]
-    Fleet --> AddEquipment[Add Equipment]
-    Fleet --> EquipmentDetails[Equipment Details]
-    Fleet --> Maintenance[Maintenance Schedule]
-    Fleet --> Analytics[Fleet Analytics]
+    DriverAction -->|View Drivers| ViewDrivers[Driver List:<br/>- Available Drivers<br/>- Busy Drivers<br/>- Driver Details<br/>- Performance Stats]
     
-    Orders --> IncomingOrders[Incoming Orders]
-    Orders --> ActiveOrders[Active Orders]
-    Orders --> OrderHistory[Order History]
-    Orders --> OrderDetails[Order Details]
+    DriverAction -->|Assign Driver| AssignDriver[Assign to Delivery:<br/>- Select Driver<br/>- Order Details<br/>- Delivery Instructions<br/>- Contact Info]
     
-    Revenue --> RevenueChart[Revenue Charts]
-    Revenue --> Transactions[Transaction History]
-    Revenue --> Reports[Financial Reports]
-    Revenue --> Invoices[Invoice Management]
+    DriverAction -->|Track Delivery| TrackDelivery[Track Active Delivery:<br/>- Order Status<br/>- Driver Location<br/>- Estimated Arrival<br/>- Customer Updates]
     
-    Profile --> CompanyInfo[Company Information]
-    Profile --> Drivers[Driver Management]
-    Profile --> Settings[Settings]
-    Profile --> Support[Support Center]
+    AddDriver --> DriverInfo[Driver Information:<br/>- Personal Details<br/>- License Number<br/>- Phone Number<br/>- Emergency Contact]
+    
+    DriverInfo --> SaveDriver[Save Driver:<br/>- Add to System<br/>- Send Notification<br/>- Update Driver List]
+    
+    AssignDriver --> SelectOrder[Select Order:<br/>- Pending Deliveries<br/>- Order Details<br/>- Customer Info<br/>- Delivery Address]
+    
+    SelectOrder --> AssignToDriver[Assign Driver:<br/>- Send Assignment<br/>- Provide Details<br/>- Set Expectations<br/>- Track Progress]
+    
+    TrackDelivery --> DeliveryMap[Delivery Map:<br/>- Point A to Point B<br/>- Driver Status<br/>- Estimated Time<br/>- Customer Notifications]
 ```
 
-### Driver App Navigation
+## Admin Dashboard Journey
+
+### Admin Login & Dashboard
 
 ```mermaid
 flowchart TD
-    TabBar[Bottom Tab Bar] --> Home[Home Tab]
-    TabBar --> Jobs[Jobs Tab]
-    TabBar --> Active[Active Tab]
-    TabBar --> Earnings[Earnings Tab]
-    TabBar --> Profile[Profile Tab]
+    AdminLogin[Admin Login] --> TwoFA[Two-Factor Authentication]
+    TwoFA --> AdminDashboard[Admin Dashboard]
     
-    Home --> Status[Availability Status]
-    Home --> NextJob[Next Assignment]
-    Home --> TodaySchedule[Today's Schedule]
-    Home --> QuickStats[Quick Stats]
+    AdminDashboard --> AdminMetrics[Platform Metrics:<br/>- Total Users: 1,247<br/>- Active Orders: 342<br/>- Revenue: $48.2K<br/>- Equipment: 156]
     
-    Jobs --> AvailableJobs[Available Jobs]
-    Jobs --> JobDetails[Job Details]
-    Jobs --> JobHistory[Job History]
-    Jobs --> JobCalendar[Job Calendar]
+    AdminMetrics --> AdminAction{Admin Action?}
     
-    Active --> CurrentJob[Current Job]
-    Active --> Navigation[Navigation]
-    Active --> Tracking[Location Tracking]
-    Active --> Documentation[Document Upload]
+    AdminAction -->|User Management| UserManagement[User Management:<br/>- User List<br/>- Verification Queue<br/>- Account Status<br/>- User Analytics]
     
-    Earnings --> TodayEarnings[Today's Earnings]
-    Earnings --> WeeklyEarnings[Weekly Earnings]
-    Earnings --> MonthlyEarnings[Monthly Earnings]
-    Earnings --> PaymentHistory[Payment History]
+    AdminAction -->|Equipment Oversight| EquipmentOversight[Equipment Oversight:<br/>- All Equipment<br/>- Verification Status<br/>- Performance Metrics<br/>- Maintenance Alerts]
     
-    Profile --> PersonalInfo[Personal Information]
-    Profile --> Documents[Document Management]
-    Profile --> Settings[Settings]
-    Profile --> Support[Support]
+    AdminAction -->|Order Management| OrderManagement[Order Management:<br/>- All Orders<br/>- Order Status<br/>- Dispute Resolution<br/>- Payment Tracking]
+    
+    AdminAction -->|Analytics| Analytics[Analytics & Reports:<br/>- Revenue Reports<br/>- User Analytics<br/>- Equipment Utilization<br/>- Geographic Data]
+    
+    AdminAction -->|System Settings| SystemSettings[System Settings:<br/>- Platform Configuration<br/>- Payment Settings<br/>- Notification Settings<br/>- Security Settings]
 ```
 
-### Admin Dashboard Navigation
+### User Management Flow
 
 ```mermaid
 flowchart TD
-    Sidebar[Sidebar Navigation] --> Dashboard[Dashboard]
-    Sidebar --> Users[Users Management]
-    Sidebar --> Companies[Companies Management]
-    Sidebar --> Equipment[Equipment Oversight]
-    Sidebar --> Orders[Orders Management]
-    Sidebar --> Disputes[Disputes Resolution]
-    Sidebar --> Analytics[Analytics & Reports]
-    Sidebar --> Settings[System Settings]
+    UserManagement[User Management] --> UserAction{User Action?}
     
-    Dashboard --> Overview[Platform Overview]
-    Dashboard --> Metrics[Key Metrics]
-    Dashboard --> Alerts[System Alerts]
-    Dashboard --> RecentActivity[Recent Activity]
+    UserAction -->|Verify User| VerifyUser[Verify User:<br/>- Review Documents<br/>- PACI Verification<br/>- Approve/Reject<br/>- Send Notification]
     
-    Users --> UserList[User List]
-    Users --> UserDetails[User Details]
-    Users --> Verification[Verification Queue]
-    Users --> UserAnalytics[User Analytics]
+    UserAction -->|Suspend User| SuspendUser[Suspend User:<br/>- Reason<br/>- Duration<br/>- Notification<br/>- Appeal Process]
     
-    Companies --> CompanyList[Company List]
-    Companies --> CompanyDetails[Company Details]
-    Companies --> ApprovalQueue[Approval Queue]
-    Companies --> CompanyAnalytics[Company Analytics]
+    UserAction -->|Edit User| EditUser[Edit User Information:<br/>- Personal Details<br/>- Contact Info<br/>- Preferences<br/>- Permissions]
     
-    Equipment --> EquipmentList[All Equipment]
-    Equipment --> EquipmentDetails[Equipment Details]
-    Equipment --> Maintenance[Maintenance Oversight]
-    Equipment --> Utilization[Utilization Reports]
+    VerifyUser --> ReviewDocuments[Review Documents:<br/>- ID Verification<br/>- Company Documents<br/>- PACI Data<br/>- Additional Info]
     
-    Orders --> OrderList[All Orders]
-    Orders --> OrderDetails[Order Details]
-    Orders --> OrderTracking[Order Tracking]
-    Orders --> OrderAnalytics[Order Analytics]
+    ReviewDocuments --> VerifyDecision{Verification Decision?}
+    VerifyDecision -->|Approve| ApproveUser[Approve User:<br/>- Update Status<br/>- Send Notification<br/>- Enable Features<br/>- Log Action]
+    VerifyDecision -->|Reject| RejectUser[Reject User:<br/>- Provide Reason<br/>- Send Notification<br/>- Request Resubmission<br/>- Log Action]
+    VerifyDecision -->|Request More Info| RequestInfo[Request More Info:<br/>- Specify Requirements<br/>- Set Deadline<br/>- Send Notification<br/>- Track Status]
     
-    Disputes --> DisputeQueue[Dispute Queue]
-    Disputes --> DisputeDetails[Dispute Details]
-    Disputes --> Resolution[Resolution Tools]
-    Disputes --> DisputeAnalytics[Dispute Analytics]
-    
-    Analytics --> Revenue[Revenue Analytics]
-    Analytics --> Users[User Analytics]
-    Analytics --> Equipment[Equipment Analytics]
-    Analytics --> Geographic[Geographic Analytics]
-    Analytics --> Custom[Custom Reports]
+    SuspendUser --> SuspensionReason[Suspension Reason:<br/>- Policy Violation<br/>- Fraud<br/>- Inactivity<br/>- Other]
+    SuspensionReason --> SuspensionDuration[Suspension Duration:<br/>- Temporary<br/>- Permanent<br/>- Review Date<br/>- Appeal Process]
+    SuspensionDuration --> NotifyUser[Notify User:<br/>- Suspension Notice<br/>- Reason<br/>- Duration<br/>- Appeal Instructions]
 ```
 
----
+### Equipment Oversight Flow
+
+```mermaid
+flowchart TD
+    EquipmentOversight[Equipment Oversight] --> EquipmentAction{Equipment Action?}
+    
+    EquipmentAction -->|Approve Equipment| ApproveEquipment[Approve Equipment:<br/>- Review Details<br/>- Verify Documents<br/>- Quality Check<br/>- Make Live]
+    
+    EquipmentAction -->|Flag Equipment| FlagEquipment[Flag Equipment:<br/>- Issue Type<br/>- Description<br/>- Owner Notification<br/>- Resolution]
+    
+    EquipmentAction -->|View Analytics| EquipmentAnalytics[Equipment Analytics:<br/>- Utilization Rates<br/>- Revenue Data<br/>- Performance Metrics<br/>- Maintenance History]
+    
+    ApproveEquipment --> ReviewEquipment[Review Equipment:<br/>- Basic Information<br/>- Specifications<br/>- Photos Quality<br/>- Document Validity]
+    
+    ReviewEquipment --> QualityCheck[Quality Check:<br/>- Equipment Condition<br/>- Safety Standards<br/>- Compliance Check<br/>- Documentation]
+    
+    QualityCheck --> ApprovalDecision{Approval Decision?}
+    ApprovalDecision -->|Approve| MakeLive[Make Equipment Live:<br/>- Update Status<br/>- Notify Owner<br/>- Enable Booking<br/>- Log Action]
+    ApprovalDecision -->|Reject| RejectEquipment[Reject Equipment:<br/>- Provide Reason<br/>- Notify Owner<br/>- Request Changes<br/>- Log Action]
+    
+    FlagEquipment --> IssueType[Issue Type:<br/>- Safety Concern<br/>- Quality Issue<br/>- Documentation Problem<br/>- Policy Violation]
+    IssueType --> FlagDetails[Flag Details:<br/>- Description<br/>- Severity Level<br/>- Required Action<br/>- Timeline]
+    FlagDetails --> NotifyOwner[Notify Owner:<br/>- Flag Notification<br/>- Issue Details<br/>- Required Actions<br/>- Resolution Timeline]
+```
+
+### Order Management & Dispute Resolution
+
+```mermaid
+flowchart TD
+    OrderManagement[Order Management] --> OrderAction{Order Action?}
+    
+    OrderAction -->|Resolve Dispute| ResolveDispute[Resolve Dispute:<br/>- Review Evidence<br/>- Contact Parties<br/>- Make Decision<br/>- Process Resolution]
+    
+    OrderAction -->|Cancel Order| CancelOrder[Cancel Order:<br/>- Reason<br/>- Refund Amount<br/>- Notify Parties<br/>- Update Status]
+    
+    OrderAction -->|View Order Details| OrderDetails[Order Details:<br/>- Order Information<br/>- Parties Involved<br/>- Payment Status<br/>- Timeline]
+    
+    ResolveDispute --> ReviewEvidence[Review Evidence:<br/>- Order History<br/>- Communication Log<br/>- Photos/Documents<br/>- Testimonies]
+    
+    ReviewEvidence --> ContactParties[Contact Parties:<br/>- Renter<br/>- Owner<br/>- Gather Information<br/>- Clarify Issues]
+    
+    ContactParties --> Investigation[Investigation:<br/>- Analyze Evidence<br/>- Check Policies<br/>- Review Guidelines<br/>- Determine Facts]
+    
+    Investigation --> ResolutionDecision{Resolution Decision?}
+    ResolutionDecision -->|Refund| ProcessRefund[Process Refund:<br/>- Calculate Amount<br/>- Process Payment<br/>- Notify Parties<br/>- Close Dispute]
+    ResolutionDecision -->|Penalty| ApplyPenalty[Apply Penalty:<br/>- Determine Penalty<br/>- Apply to Account<br/>- Notify Parties<br/>- Log Action]
+    ResolutionDecision -->|Mediate| Mediation[Mediate Solution:<br/>- Facilitate Discussion<br/>- Propose Compromise<br/>- Document Agreement<br/>- Monitor Compliance]
+    
+    CancelOrder --> CancellationReason[Cancellation Reason:<br/>- Customer Request<br/>- Equipment Issue<br/>- Payment Problem<br/>- Policy Violation]
+    CancellationReason --> RefundCalculation[Refund Calculation:<br/>- Calculate Amount<br/>- Check Policy<br/>- Determine Fees<br/>- Process Refund]
+    RefundCalculation --> NotifyParties[Notify All Parties:<br/>- Cancellation Notice<br/>- Refund Details<br/>- Next Steps<br/>- Contact Information]
+```
+
+## Order & Booking Management
+
+### Equipment Booking Flow
+
+```mermaid
+flowchart TD
+    EquipmentDetails[Equipment Details] --> UserAction{User Action?}
+    
+    UserAction -->|Book Now| CreateBooking[Create Booking]
+    UserAction -->|Contact Owner| ContactOwner[Contact Owner]
+    UserAction -->|Save for Later| SaveEquipment[Save Equipment]
+    UserAction -->|Share| ShareEquipment[Share Equipment]
+    
+    CreateBooking --> BookingDetails[Booking Details:<br/>- Start Date<br/>- End Date<br/>- Location<br/>- Services Needed<br/>- Special Requirements]
+    
+    BookingDetails --> PricingCalculation[Pricing Calculation:<br/>- Equipment Cost<br/>- Delivery Cost<br/>- Operator Cost<br/>- Taxes<br/>- Total Amount]
+    
+    PricingCalculation --> PaymentMethod{Payment Method?}
+    PaymentMethod -->|Wallet| WalletPayment[Wallet Payment]
+    PaymentMethod -->|MyFatoorah| MyFatoorahPayment[MyFatoorah Payment]
+    
+    WalletPayment --> CheckBalance{Sufficient Balance?}
+    CheckBalance -->|Yes| ProcessWalletPayment[Process Wallet Payment]
+    CheckBalance -->|No| AddFunds[Add Funds to Wallet]
+    AddFunds --> MyFatoorahPayment
+    
+    MyFatoorahPayment --> PaymentGateway[MyFatoorah Gateway:<br/>- Card Payment<br/>- Bank Transfer<br/>- Digital Wallet]
+    PaymentGateway --> PaymentResult{Payment Result?}
+    
+    PaymentResult -->|Success| OrderCreated[Order Created]
+    PaymentResult -->|Failed| PaymentError[Payment Error:<br/>- Retry Payment<br/>- Try Different Method<br/>- Contact Support]
+    
+    ProcessWalletPayment --> OrderCreated
+    OrderCreated --> OrderConfirmation[Order Confirmation:<br/>- Order Number<br/>- Equipment Details<br/>- Delivery Schedule<br/>- Contact Information]
+```
+
+### Order Management & Tracking
+
+```mermaid
+flowchart TD
+    OrderConfirmation[Order Confirmation] --> OrderStatus{Order Status?}
+    
+    OrderStatus -->|Pending| PendingApproval[Pending Owner Approval:<br/>- Wait for Response<br/>- Owner Review Time<br/>- Auto-cancel Timer]
+    
+    OrderStatus -->|Accepted| OrderAccepted[Order Accepted:<br/>- Payment Confirmed<br/>- Equipment Reserved<br/>- Delivery Scheduled]
+    
+    OrderStatus -->|Rejected| OrderRejected[Order Rejected:<br/>- Reason Provided<br/>- Alternative Suggestions<br/>- Refund Processed]
+    
+    OrderAccepted --> DeliveryTracking[Delivery Tracking:<br/>- Point A: Equipment Location<br/>- Point B: Delivery Location<br/>- Driver Information<br/>- Estimated Arrival]
+    
+    DeliveryTracking --> EquipmentDelivered[Equipment Delivered:<br/>- Driver Confirmation<br/>- Customer Signature<br/>- Equipment Handover<br/>- Documentation]
+    
+    EquipmentDelivered --> RentalPeriod[Rental Period:<br/>- Usage Tracking<br/>- Support Available<br/>- Emergency Contact<br/>- Status Updates]
+    
+    RentalPeriod --> RentalComplete[Rental Complete:<br/>- Equipment Return<br/>- Final Inspection<br/>- Payment Release<br/>- Rating & Review]
+    
+    OrderRejected --> FindAlternative[Find Alternative:<br/>- Similar Equipment<br/>- Different Owners<br/>- AI Recommendations<br/>- Search Again]
+    FindAlternative --> EquipmentSearch
+```
+
+## Payment & Financial Flows
+
+### Payment Processing
+
+```mermaid
+flowchart TD
+    PaymentFlow[Payment Flow] --> PaymentType{Payment Type?}
+    
+    PaymentType -->|Wallet| WalletManagement[Wallet Management]
+    PaymentType -->|MyFatoorah| MyFatoorahFlow[MyFatoorah Payment]
+    PaymentType -->|Refund| RefundProcess[Refund Process]
+    
+    WalletManagement --> WalletAction{Wallet Action?}
+    WalletAction -->|Add Funds| AddFunds[Add Funds:<br/>- Amount<br/>- Payment Method<br/>- Confirmation]
+    WalletAction -->|View Balance| ViewBalance[View Balance:<br/>- Available Balance<br/>- Transaction History<br/>- Pending Amounts]
+    WalletAction -->|Withdraw| WithdrawFunds[Withdraw Funds:<br/>- Bank Account<br/>- Amount<br/>- Processing Time]
+    
+    MyFatoorahFlow --> PaymentMethod{Payment Method?}
+    PaymentMethod -->|Card| CardPayment[Card Payment:<br/>- Card Details<br/>- Security Code<br/>- Billing Address]
+    PaymentMethod -->|Bank Transfer| BankTransfer[Bank Transfer:<br/>- Bank Selection<br/>- Account Details<br/>- Transfer Confirmation]
+    PaymentMethod -->|Digital Wallet| DigitalWallet[Digital Wallet:<br/>- Apple Pay<br/>- Google Pay<br/>- Samsung Pay]
+    
+    PaymentMethod --> PaymentResult{Payment Result?}
+    PaymentResult -->|Success| PaymentSuccess[Payment Success:<br/>- Confirmation<br/>- Receipt<br/>- Order Update]
+    PaymentResult -->|Failed| PaymentFailed[Payment Failed:<br/>- Error Message<br/>- Retry Option<br/>- Alternative Methods]
+    
+    RefundProcess --> RefundRequest[Refund Request:<br/>- Order Details<br/>- Refund Reason<br/>- Amount]
+    RefundRequest --> RefundProcessing[Refund Processing:<br/>- Admin Review<br/>- Approval<br/>- Processing Time]
+    RefundProcessing --> RefundComplete[Refund Complete:<br/>- Confirmation<br/>- Refund Method<br/>- Timeline]
+```
+
+## AI Assistant & Smart Features
+
+### AI-Powered Equipment Recommendations
+
+```mermaid
+flowchart TD
+    AIAssistant[AI Assistant] --> UserQuery[User Query:<br/>- Natural Language<br/>- Project Description<br/>- Requirements<br/>- Constraints]
+    
+    UserQuery --> AIProcessing[AI Processing:<br/>- Analyze Requirements<br/>- Extract Specifications<br/>- Match Equipment<br/>- Calculate Costs]
+    
+    AIProcessing --> AIResponse[AI Response:<br/>- Equipment Recommendations<br/>- Explanations<br/>- Pricing Estimates<br/>- Alternative Options]
+    
+    AIResponse --> UserAction{User Action?}
+    UserAction -->|Select Equipment| BookEquipment[Book Recommended Equipment]
+    UserAction -->|Ask Questions| FollowUpQuestions[Follow-up Questions:<br/>- Clarify Requirements<br/>- Compare Options<br/>- Get More Details]
+    UserAction -->|Refine Search| RefineSearch[Refine Search:<br/>- Adjust Filters<br/>- Modify Requirements<br/>- Try Different Approach]
+    
+    FollowUpQuestions --> AIProcessing
+    RefineSearch --> AIProcessing
+    BookEquipment --> CreateBooking
+```
+
+### Smart Search & Filtering
+
+```mermaid
+flowchart TD
+    SmartSearch[Smart Search] --> SearchInput[Search Input:<br/>- Text Search<br/>- Voice Search<br/>- Image Search<br/>- Category Browse]
+    
+    SearchInput --> SearchProcessing[Search Processing:<br/>- Query Analysis<br/>- Intent Recognition<br/>- Filter Application<br/>- Result Ranking]
+    
+    SearchProcessing --> SearchResults[Search Results:<br/>- Equipment List<br/>- Relevance Score<br/>- Availability Status<br/>- Pricing Info]
+    
+    SearchResults --> UserSelection{User Selection?}
+    UserSelection -->|Select Equipment| EquipmentDetails
+    UserSelection -->|Refine Search| ApplyFilters[Apply Filters:<br/>- Price Range<br/>- Location<br/>- Availability<br/>- Features]
+    UserSelection -->|Save Search| SaveSearch[Save Search:<br/>- Search Criteria<br/>- Alerts<br/>- Notifications]
+    
+    ApplyFilters --> SearchProcessing
+    SaveSearch --> SearchAlerts[Search Alerts:<br/>- New Matches<br/>- Price Changes<br/>- Availability Updates]
+```
+
+## Communication & Support
+
+### In-App Communication
+
+```mermaid
+flowchart TD
+    Communication[Communication] --> CommType{Communication Type?}
+    
+    CommType -->|Chat| InAppChat[In-App Chat:<br/>- Real-time Messaging<br/>- File Sharing<br/>- Voice Messages<br/>- Message History]
+    
+    CommType -->|Call| VoiceCall[Voice Call:<br/>- Direct Calling<br/>- Call Recording<br/>- Call History<br/>- Quality Rating]
+    
+    CommType -->|Support| SupportTicket[Support Ticket:<br/>- Issue Description<br/>- Priority Level<br/>- Attachments<br/>- Status Tracking]
+    
+    InAppChat --> ChatFeatures[Chat Features:<br/>- Typing Indicators<br/>- Read Receipts<br/>- Message Encryption<br/>- Auto-translation]
+    
+    VoiceCall --> CallFeatures[Call Features:<br/>- Call Quality<br/>- Noise Cancellation<br/>- Call Transfer<br/>- Conference Calling]
+    
+    SupportTicket --> TicketManagement[Ticket Management:<br/>- Auto-assignment<br/>- Escalation Rules<br/>- Response Time<br/>- Resolution Tracking]
+```
+
+### Help & Support System
+
+```mermaid
+flowchart TD
+    HelpSupport[Help & Support] --> SupportType{Support Type?}
+    
+    SupportType -->|FAQ| FAQ[Frequently Asked Questions:<br/>- Searchable Database<br/>- Category Organization<br/>- Video Tutorials<br/>- Step-by-step Guides]
+    
+    SupportType -->|Live Chat| LiveChat[Live Chat Support:<br/>- Real-time Assistance<br/>- Agent Availability<br/>- Chat History<br/>- File Sharing]
+    
+    SupportType -->|Email| EmailSupport[Email Support:<br/>- Detailed Queries<br/>- Attachments<br/>- Response Time<br/>- Ticket Tracking]
+    
+    SupportType -->|Phone| PhoneSupport[Phone Support:<br/>- Direct Calling<br/>- Callback Service<br/>- Multi-language<br/>- Emergency Support]
+    
+    FAQ --> SearchFAQ[Search FAQ:<br/>- Keyword Search<br/>- Category Filter<br/>- Popular Questions<br/>- Recent Updates]
+    
+    LiveChat --> StartChat[Start Chat:<br/>- Queue Position<br/>- Agent Assignment<br/>- Chat Window<br/>- File Upload]
+    
+    EmailSupport --> ComposeEmail[Compose Email:<br/>- Subject Line<br/>- Detailed Description<br/>- Attachments<br/>- Priority Selection]
+    
+    PhoneSupport --> CallSupport[Call Support:<br/>- Phone Number<br/>- Business Hours<br/>- Callback Option<br/>- Language Selection]
+```
 
 ## Settings & Profile Management
 
@@ -608,416 +486,140 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    Profile[Profile Screen] --> PersonalInfo[Personal Information]
-    Profile --> AccountSettings[Account Settings]
-    Profile --> PrivacySettings[Privacy Settings]
-    Profile --> NotificationSettings[Notification Settings]
-    Profile --> SecuritySettings[Security Settings]
+    Profile[Profile Management] --> ProfileType{Profile Type?}
     
-    PersonalInfo --> EditProfile[Edit Profile]
-    PersonalInfo --> UploadPhoto[Upload Photo]
-    PersonalInfo --> ContactInfo[Contact Information]
-    PersonalInfo --> AddressInfo[Address Information]
+    ProfileType -->|Individual| IndividualProfile[Individual Profile:<br/>- Personal Information<br/>- Contact Details<br/>- Preferences<br/>- Verification Status]
     
-    AccountSettings --> ChangePassword[Change Password]
-    AccountSettings --> ChangePhone[Change Phone Number]
-    AccountSettings --> ChangeEmail[Change Email]
-    AccountSettings --> DeleteAccount[Delete Account]
+    ProfileType -->|Company| CompanyProfile[Company Profile:<br/>- Company Information<br/>- Business Details<br/>- Fleet Management<br/>- Driver Management]
     
-    PrivacySettings --> DataSharing[Data Sharing Preferences]
-    PrivacySettings --> LocationSharing[Location Sharing]
-    PrivacySettings --> ProfileVisibility[Profile Visibility]
-    PrivacySettings --> DataExport[Data Export]
+    IndividualProfile --> PersonalInfo[Personal Information:<br/>- Full Name<br/>- Phone Number<br/>- Email Address<br/>- Address<br/>- PACI Verification]
     
-    NotificationSettings --> PushNotifications[Push Notifications]
-    NotificationSettings --> EmailNotifications[Email Notifications]
-    NotificationSettings --> SMSNotifications[SMS Notifications]
-    NotificationSettings --> NotificationTypes[Notification Types]
+    CompanyProfile --> CompanyInfo[Company Information:<br/>- Company Name<br/>- License Number<br/>- Business Type<br/>- Contact Information<br/>- Banking Details]
     
-    SecuritySettings --> TwoFactor[Two-Factor Authentication]
-    SecuritySettings --> LoginHistory[Login History]
-    SecuritySettings --> SecurityAlerts[Security Alerts]
-    SecuritySettings --> TrustedDevices[Trusted Devices]
+    PersonalInfo --> Preferences[User Preferences:<br/>- Language Selection<br/>- Notification Settings<br/>- Privacy Settings<br/>- Security Settings]
+    
+    CompanyInfo --> FleetSettings[Fleet Settings:<br/>- Equipment Management<br/>- Driver Management<br/>- Pricing Rules<br/>- Availability Settings]
+    
+    Preferences --> NotificationSettings[Notification Settings:<br/>- Push Notifications<br/>- Email Notifications<br/>- SMS Notifications<br/>- Quiet Hours]
+    
+    FleetSettings --> DriverSettings[Driver Settings:<br/>- Driver List<br/>- Assignment Rules<br/>- Performance Tracking<br/>- Contact Management]
 ```
-
-### Settings Categories
-
-```mermaid
-flowchart TD
-    Settings[Settings Menu] --> General[General Settings]
-    Settings --> Account[Account Settings]
-    Settings --> Notifications[Notification Settings]
-    Settings --> Privacy[Privacy Settings]
-    Settings --> Security[Security Settings]
-    Settings --> App[App Settings]
-    Settings --> Support[Support Settings]
-    
-    General --> Language[Language Selection]
-    General --> Currency[Currency Selection]
-    General --> Theme[Theme Selection]
-    General --> Units[Measurement Units]
-    
-    App --> Cache[Cache Management]
-    App --> Storage[Storage Usage]
-    App --> Updates[App Updates]
-    App --> Permissions[App Permissions]
-    
-    Support --> HelpCenter[Help Center]
-    Support --> ContactUs[Contact Us]
-    Support --> Feedback[Send Feedback]
-    Support --> ReportBug[Report Bug]
-    Support --> FAQ[Frequently Asked Questions]
-```
-
----
-
-## Notification System
-
-### Notification Flow
-
-```mermaid
-flowchart TD
-    Notification[Notification Received] --> NotificationType{Notification Type}
-    
-    NotificationType -->|Order Update| OrderNotification[Order Notification]
-    NotificationType -->|Payment| PaymentNotification[Payment Notification]
-    NotificationType -->|System| SystemNotification[System Notification]
-    NotificationType -->|Marketing| MarketingNotification[Marketing Notification]
-    NotificationType -->|Security| SecurityNotification[Security Notification]
-    
-    OrderNotification --> OrderAction{Action Required?}
-    OrderAction -->|Yes| OrderActionScreen[Order Action Screen]
-    OrderAction -->|No| OrderInfoScreen[Order Info Screen]
-    
-    PaymentNotification --> PaymentAction{Action Required?}
-    PaymentAction -->|Yes| PaymentScreen[Payment Screen]
-    PaymentAction -->|No| PaymentInfoScreen[Payment Info Screen]
-    
-    SystemNotification --> SystemAction{Action Required?}
-    SystemAction -->|Yes| SystemActionScreen[System Action Screen]
-    SystemAction -->|No| SystemInfoScreen[System Info Screen]
-    
-    MarketingNotification --> MarketingAction{User Interested?}
-    MarketingAction -->|Yes| MarketingScreen[Marketing Screen]
-    MarketingAction -->|No| DismissNotification[Dismiss Notification]
-    
-    SecurityNotification --> SecurityAction[Security Action Required]
-    SecurityAction --> SecurityScreen[Security Screen]
-```
-
-### Notification Center
-
-```mermaid
-flowchart TD
-    NotificationCenter[Notification Center] --> NotificationList[Notification List]
-    NotificationCenter --> NotificationSettings[Notification Settings]
-    NotificationCenter --> NotificationHistory[Notification History]
-    
-    NotificationList --> UnreadNotifications[Unread Notifications]
-    NotificationList --> ReadNotifications[Read Notifications]
-    NotificationList --> ArchivedNotifications[Archived Notifications]
-    
-    NotificationSettings --> PushSettings[Push Notification Settings]
-    NotificationSettings --> EmailSettings[Email Notification Settings]
-    NotificationSettings --> SMSSettings[SMS Notification Settings]
-    NotificationSettings --> QuietHours[Quiet Hours Settings]
-    
-    PushSettings --> OrderUpdates[Order Updates]
-    PushSettings --> PaymentUpdates[Payment Updates]
-    PushSettings --> SystemUpdates[System Updates]
-    PushSettings --> MarketingUpdates[Marketing Updates]
-```
-
----
-
-## Help & Support System
-
-### Support Flow
-
-```mermaid
-flowchart TD
-    Help[Help & Support] --> SupportOptions{Support Type}
-    
-    SupportOptions -->|FAQ| FAQ[Frequently Asked Questions]
-    SupportOptions -->|Live Chat| LiveChat[Live Chat Support]
-    SupportOptions -->|Email| EmailSupport[Email Support]
-    SupportOptions -->|Phone| PhoneSupport[Phone Support]
-    SupportOptions -->|Video Call| VideoCall[Video Call Support]
-    
-    FAQ --> SearchFAQ[Search FAQ]
-    FAQ --> CategoryFAQ[Browse by Category]
-    FAQ --> PopularFAQ[Popular Questions]
-    
-    LiveChat --> StartChat[Start Chat]
-    LiveChat --> ChatHistory[Chat History]
-    LiveChat --> FileUpload[File Upload]
-    
-    EmailSupport --> ComposeEmail[Compose Email]
-    EmailSupport --> EmailHistory[Email History]
-    EmailSupport --> AttachFiles[Attach Files]
-    
-    PhoneSupport --> CallSupport[Call Support]
-    PhoneSupport --> ScheduleCall[Schedule Call]
-    PhoneSupport --> CallHistory[Call History]
-    
-    VideoCall --> StartVideoCall[Start Video Call]
-    VideoCall --> ScheduleVideoCall[Schedule Video Call]
-    VideoCall --> VideoCallHistory[Video Call History]
-```
-
-### Help Categories
-
-```mermaid
-flowchart TD
-    HelpCenter[Help Center] --> GettingStarted[Getting Started]
-    HelpCenter --> AccountHelp[Account Help]
-    HelpCenter --> BookingHelp[Booking Help]
-    HelpCenter --> PaymentHelp[Payment Help]
-    HelpCenter --> TechnicalHelp[Technical Help]
-    HelpCenter --> SafetyHelp[Safety Help]
-    HelpCenter --> LegalHelp[Legal Help]
-    
-    GettingStarted --> AppOverview[App Overview]
-    GettingStarted --> Registration[Registration Process]
-    GettingStarted --> FirstBooking[First Booking]
-    GettingStarted --> ProfileSetup[Profile Setup]
-    
-    AccountHelp --> LoginIssues[Login Issues]
-    AccountHelp --> PasswordReset[Password Reset]
-    AccountHelp --> AccountVerification[Account Verification]
-    AccountHelp --> AccountDeletion[Account Deletion]
-    
-    BookingHelp --> SearchHelp[Search Help]
-    BookingHelp --> BookingProcess[Booking Process]
-    BookingHelp --> Cancellation[Cancellation Process]
-    BookingHelp --> Modifications[Booking Modifications]
-    
-    PaymentHelp --> PaymentMethods[Payment Methods]
-    PaymentHelp --> Refunds[Refunds Process]
-    PaymentHelp --> Billing[Billing Issues]
-    PaymentHelp --> WalletHelp[Wallet Help]
-    
-    TechnicalHelp --> AppIssues[App Issues]
-    TechnicalHelp --> Performance[Performance Issues]
-    TechnicalHelp --> Connectivity[Connectivity Issues]
-    TechnicalHelp --> DeviceCompatibility[Device Compatibility]
-    
-    SafetyHelp --> SafetyGuidelines[Safety Guidelines]
-    SafetyHelp --> EmergencyProcedures[Emergency Procedures]
-    SafetyHelp --> InsuranceInfo[Insurance Information]
-    SafetyHelp --> IncidentReporting[Incident Reporting]
-    
-    LegalHelp --> TermsOfService[Terms of Service]
-    LegalHelp --> PrivacyPolicy[Privacy Policy]
-    LegalHelp --> UserAgreement[User Agreement]
-    LegalHelp --> DisputeResolution[Dispute Resolution]
-```
-
----
 
 ## Error Handling & Edge Cases
 
-### Error Flow
+### Error Flow Management
 
 ```mermaid
 flowchart TD
-    Error[Error Occurs] --> ErrorType{Error Type}
+    ErrorOccurs[Error Occurs] --> ErrorType{Error Type?}
     
-    ErrorType -->|Network Error| NetworkError[Network Error Handling]
-    ErrorType -->|Validation Error| ValidationError[Validation Error Handling]
-    ErrorType -->|Authentication Error| AuthError[Authentication Error Handling]
-    ErrorType -->|Payment Error| PaymentError[Payment Error Handling]
-    ErrorType -->|System Error| SystemError[System Error Handling]
+    ErrorType -->|Network Error| NetworkError[Network Error:<br/>- Check Connection<br/>- Retry Action<br/>- Offline Mode<br/>- Sync When Online]
     
-    NetworkError --> CheckConnection[Check Connection]
-    CheckConnection --> RetryAction[Retry Action]
-    CheckConnection --> OfflineMode[Switch to Offline Mode]
+    ErrorType -->|Payment Error| PaymentError[Payment Error:<br/>- Retry Payment<br/>- Alternative Method<br/>- Contact Support<br/>- Refund Process]
+    
+    ErrorType -->|Validation Error| ValidationError[Validation Error:<br/>- Show Error Message<br/>- Highlight Fields<br/>- Provide Guidance<br/>- Auto-correct]
+    
+    ErrorType -->|System Error| SystemError[System Error:<br/>- Log Error<br/>- Show Generic Message<br/>- Report Bug<br/>- Fallback Action]
+    
+    ErrorType -->|Authentication Error| AuthError[Authentication Error:<br/>- Redirect to Login<br/>- Clear Session<br/>- Show Message<br/>- Refresh Token]
+    
+    NetworkError --> RetryAction[Retry Action]
+    RetryAction --> Success{Success?}
+    Success -->|Yes| ContinueFlow[Continue Flow]
+    Success -->|No| OfflineMode[Offline Mode:<br/>- Limited Features<br/>- Queue Actions<br/>- Sync Later]
+    
+    PaymentError --> PaymentRetry[Payment Retry]
+    PaymentRetry --> PaymentSuccess{Success?}
+    PaymentSuccess -->|Yes| PaymentComplete[Payment Complete]
+    PaymentSuccess -->|No| AlternativePayment[Alternative Payment:<br/>- Different Method<br/>- Contact Support<br/>- Manual Process]
     
     ValidationError --> ShowError[Show Error Message]
-    ShowError --> HighlightField[Highlight Problem Field]
-    ShowError --> ProvideGuidance[Provide Guidance]
-    
-    AuthError --> RedirectLogin[Redirect to Login]
-    AuthError --> ClearSession[Clear Session]
-    AuthError --> ShowMessage[Show Error Message]
-    
-    PaymentError --> PaymentRetry[Retry Payment]
-    PaymentError --> AlternativePayment[Alternative Payment Method]
-    PaymentError --> ContactSupport[Contact Support]
+    ShowError --> UserCorrection[User Correction]
+    UserCorrection --> ValidationCheck[Validation Check]
+    ValidationCheck --> Valid{Valid?}
+    Valid -->|Yes| ContinueFlow
+    Valid -->|No| ShowError
     
     SystemError --> LogError[Log Error]
-    SystemError --> ShowGenericMessage[Show Generic Message]
-    SystemError --> ReportBug[Report Bug]
-    SystemError --> FallbackAction[Fallback Action]
+    LogError --> GenericMessage[Show Generic Message]
+    GenericMessage --> FallbackAction[Fallback Action:<br/>- Basic Functionality<br/>- Contact Support<br/>- Try Again Later]
+    
+    AuthError --> RedirectLogin[Redirect to Login]
+    RedirectLogin --> LoginFlow[Login Flow]
+    LoginFlow --> AuthSuccess{Success?}
+    AuthSuccess -->|Yes| ContinueFlow
+    AuthSuccess -->|No| AuthError
 ```
 
-### Edge Cases
+### Edge Cases Handling
 
 ```mermaid
 flowchart TD
-    EdgeCase[Edge Case] --> CaseType{Case Type}
+    EdgeCase[Edge Case] --> CaseType{Case Type?}
     
-    CaseType -->|No Data| EmptyState[Empty State Handling]
-    CaseType -->|Loading| LoadingState[Loading State Handling]
-    CaseType -->|Offline| OfflineState[Offline State Handling]
-    CaseType -->|Maintenance| MaintenanceState[Maintenance State Handling]
-    CaseType -->|Rate Limited| RateLimitState[Rate Limit State Handling]
+    CaseType -->|No Data| EmptyState[Empty State:<br/>- Show Empty Message<br/>- Provide Action Button<br/>- Show Guidance<br/>- Suggest Alternatives]
     
-    EmptyState --> ShowEmptyMessage[Show Empty Message]
-    ShowEmptyMessage --> ProvideAction[Provide Action Button]
-    ShowEmptyMessage --> ShowGuidance[Show Guidance]
+    CaseType -->|Loading| LoadingState[Loading State:<br/>- Show Loading Indicator<br/>- Show Progress<br/>- Handle Timeout<br/>- Provide Cancel Option]
     
-    LoadingState --> ShowLoader[Show Loading Indicator]
-    ShowLoader --> ShowProgress[Show Progress if Available]
-    ShowLoader --> TimeoutHandling[Handle Timeout]
+    CaseType -->|Offline| OfflineState[Offline State:<br/>- Show Offline Message<br/>- Enable Offline Features<br/>- Queue Actions<br/>- Sync When Online]
     
-    OfflineState --> ShowOfflineMessage[Show Offline Message]
-    ShowOfflineMessage --> EnableOfflineFeatures[Enable Offline Features]
-    ShowOfflineMessage --> QueueActions[Queue Actions for Later]
+    CaseType -->|Maintenance| MaintenanceState[Maintenance State:<br/>- Show Maintenance Message<br/>- Show ETA<br/>- Contact Information<br/>- Alternative Options]
     
-    MaintenanceState --> ShowMaintenanceMessage[Show Maintenance Message]
-    ShowMaintenanceMessage --> ShowETA[Show Estimated Time]
-    ShowMaintenanceMessage --> ContactInfo[Show Contact Information]
+    CaseType -->|Rate Limited| RateLimitState[Rate Limit State:<br/>- Show Rate Limit Message<br/>- Show Retry Time<br/>- Suggest Alternative<br/>- Contact Support]
     
-    RateLimitState --> ShowRateLimitMessage[Show Rate Limit Message]
-    ShowRateLimitMessage --> ShowRetryTime[Show Retry Time]
-    ShowRateLimitMessage --> SuggestAlternative[Suggest Alternative Action]
+    EmptyState --> ProvideAction[Provide Action:<br/>- Add Equipment<br/>- Search Again<br/>- Browse Categories<br/>- Contact Support]
+    
+    LoadingState --> TimeoutHandling[Timeout Handling:<br/>- Show Timeout Message<br/>- Retry Option<br/>- Contact Support<br/>- Alternative Action]
+    
+    OfflineState --> QueueActions[Queue Actions:<br/>- Save for Later<br/>- Sync When Online<br/>- Offline Features<br/>- Status Updates]
+    
+    MaintenanceState --> ShowETA[Show ETA:<br/>- Estimated Time<br/>- Progress Updates<br/>- Contact Information<br/>- Alternative Services]
+    
+    RateLimitState --> ShowRetryTime[Show Retry Time:<br/>- Countdown Timer<br/>- Retry Button<br/>- Alternative Actions<br/>- Contact Support]
 ```
 
----
+## User Experience Considerations
 
-## Offline Capabilities
+### Performance Optimization
+- **Fast Loading**: Optimized initial load times < 3 seconds
+- **Offline Support**: Core functionality without internet
+- **Smooth Animations**: 60fps transitions
+- **Battery Optimization**: Efficient resource usage
 
-### Offline Flow
+### Accessibility Features
+- **Screen Reader Support**: Voice-over compatibility
+- **High Contrast**: Visual accessibility options
+- **Large Text**: Scalable font sizes
+- **Keyboard Navigation**: Full keyboard accessibility
 
-```mermaid
-flowchart TD
-    AppStart[App Start] --> CheckConnection{Internet Available?}
-    
-    CheckConnection -->|Yes| OnlineMode[Online Mode]
-    CheckConnection -->|No| OfflineMode[Offline Mode]
-    
-    OnlineMode --> SyncData[Sync Offline Data]
-    SyncData --> NormalOperation[Normal Operation]
-    
-    OfflineMode --> CheckCachedData[Check Cached Data]
-    CheckCachedData --> LimitedFeatures[Limited Features Available]
-    
-    LimitedFeatures --> ViewCachedData[View Cached Data]
-    LimitedFeatures --> QueueActions[Queue Actions]
-    LimitedFeatures --> OfflineSearch[Offline Search]
-    
-    QueueActions --> ActionQueue[Action Queue]
-    ActionQueue --> SyncWhenOnline[Sync When Online]
-    
-    SyncWhenOnline --> CheckConnection
-```
+### Multi-language Support
+- **English/Arabic**: Complete language support
+- **RTL Layout**: Right-to-left for Arabic
+- **Cultural Adaptation**: Localized content and imagery
+- **Currency Support**: KWD with international options
 
-### Offline Features
+### Security Features
+- **PACI Verification**: Kuwait Civil ID integration
+- **Two-Factor Authentication**: Enhanced security
+- **Data Encryption**: End-to-end encryption
+- **Privacy Controls**: User data management
 
-```mermaid
-flowchart TD
-    OfflineFeatures[Offline Features] --> ViewFeatures[View Features]
-    OfflineFeatures --> EditFeatures[Edit Features]
-    OfflineFeatures --> SearchFeatures[Search Features]
-    OfflineFeatures --> QueueFeatures[Queue Features]
-    
-    ViewFeatures --> ViewProfile[View Profile]
-    ViewFeatures --> ViewOrders[View Cached Orders]
-    ViewFeatures --> ViewEquipment[View Cached Equipment]
-    ViewFeatures --> ViewHistory[View History]
-    
-    EditFeatures --> EditProfile[Edit Profile]
-    EditFeatures --> DraftMessages[Draft Messages]
-    EditFeatures --> EditBookings[Edit Bookings]
-    
-    SearchFeatures --> SearchCached[Search Cached Data]
-    SearchFeatures --> FilterCached[Filter Cached Data]
-    SearchFeatures --> SortCached[Sort Cached Data]
-    
-    QueueFeatures --> QueueMessages[Queue Messages]
-    QueueFeatures --> QueueBookings[Queue Bookings]
-    QueueFeatures --> QueuePayments[Queue Payments]
-    QueueFeatures --> QueueUpdates[Queue Updates]
-```
+### Success Metrics
 
----
+#### User Engagement
+- **Daily Active Users**: Platform usage frequency
+- **Session Duration**: Time spent in app
+- **Feature Adoption**: Usage of key features
+- **Retention Rates**: User return frequency
 
-## Enhanced User Flow Patterns
+#### Business Metrics
+- **Order Completion Rate**: Successful transactions
+- **Revenue per User**: Average spending
+- **Equipment Utilization**: Asset usage rates
+- **Customer Satisfaction**: Rating scores
 
-### Advanced Search Flow
-
-```mermaid
-flowchart TD
-    Search[Search Interface] --> SearchType{Search Type}
-    
-    SearchType -->|Text Search| TextSearch[Text Search]
-    SearchType -->|Voice Search| VoiceSearch[Voice Search]
-    SearchType -->|Image Search| ImageSearch[Image Search]
-    SearchType -->|AI Search| AISearch[AI Search]
-    
-    TextSearch --> SearchInput[Search Input]
-    SearchInput --> AutoComplete[Auto Complete]
-    AutoComplete --> SearchResults[Search Results]
-    
-    VoiceSearch --> VoiceInput[Voice Input]
-    VoiceInput --> SpeechToText[Speech to Text]
-    SpeechToText --> SearchResults
-    
-    ImageSearch --> ImageInput[Image Input]
-    ImageInput --> ImageRecognition[Image Recognition]
-    ImageRecognition --> SearchResults
-    
-    AISearch --> AIInput[AI Input]
-    AIInput --> AIProcessing[AI Processing]
-    AIProcessing --> AIRecommendations[AI Recommendations]
-    
-    SearchResults --> FilterResults[Filter Results]
-    FilterResults --> SortResults[Sort Results]
-    SortResults --> ViewResults[View Results]
-    
-    ViewResults --> ListView[List View]
-    ViewResults --> MapView[Map View]
-    ViewResults --> GridView[Grid View]
-```
-
-### Real-time Features Flow
-
-```mermaid
-flowchart TD
-    RealTime[Real-time Features] --> FeatureType{Feature Type}
-    
-    FeatureType -->|Live Tracking| LiveTracking[Live Tracking]
-    FeatureType -->|Live Chat| LiveChat[Live Chat]
-    FeatureType -->|Live Notifications| LiveNotifications[Live Notifications]
-    FeatureType -->|Live Updates| LiveUpdates[Live Updates]
-    
-    LiveTracking --> GPSLocation[GPS Location]
-    GPSLocation --> MapUpdate[Map Update]
-    MapUpdate --> ETAUpdate[ETA Update]
-    
-    LiveChat --> MessageSend[Send Message]
-    MessageSend --> MessageReceive[Receive Message]
-    MessageReceive --> TypingIndicator[Typing Indicator]
-    
-    LiveNotifications --> NotificationReceive[Receive Notification]
-    NotificationReceive --> NotificationDisplay[Display Notification]
-    NotificationDisplay --> NotificationAction[Notification Action]
-    
-    LiveUpdates --> DataUpdate[Data Update]
-    DataUpdate --> UIUpdate[UI Update]
-    UIUpdate --> UserNotification[Notify User]
-```
-
-This comprehensive enhancement adds all the missing features and professional elements to make the User Experience Flows complete and industry-standard. The flows now include:
-
-1. **Complete App Navigation** for all user types
-2. **Settings & Profile Management** with all necessary options
-3. **Notification System** with different types and handling
-4. **Help & Support System** with multiple support channels
-5. **Error Handling & Edge Cases** for robust user experience
-6. **Offline Capabilities** for better reliability
-7. **Advanced Search Features** including AI and voice search
-8. **Real-time Features** for live interactions
-
-The flows are now professional, comprehensive, and cover all aspects of a modern rental/marketplace application.
+#### Technical Metrics
+- **App Performance**: Load times and responsiveness
+- **Error Rates**: System reliability
+- **Uptime**: Platform availability
+- **Response Times**: API performance
