@@ -179,24 +179,24 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    OrderAccepted[Order Accepted] --> DeliverySetup[Delivery Setup:<br/>- Driver Name (Text Field)<br/>- Driver Phone Number<br/>- Delivery Instructions<br/>- Point A to Point B Route]
+    OrderAccepted[Order Accepted] --> DeliverySetup[Delivery Setup:<br/>Driver Name Text Field<br/>Driver Phone Number<br/>Delivery Instructions<br/>Point A to Point B Route]
     
-    DeliverySetup --> DeliveryScheduled[Delivery Scheduled:<br/>- Point A: Equipment Location<br/>- Point B: Delivery Location<br/>- Estimated Time<br/>- Driver Contact Info]
+    DeliverySetup --> DeliveryScheduled[Delivery Scheduled:<br/>Point A Equipment Location<br/>Point B Delivery Location<br/>Estimated Time<br/>Driver Contact Info]
     
-    DeliveryScheduled --> TrackingMap[Tracking Map Display:<br/>- Point A to Point B Route<br/>- Driver Status<br/>- Estimated Arrival<br/>- Simple Point-to-Point Tracking]
+    DeliveryScheduled --> TrackingMap[Tracking Map Display:<br/>Point A to Point B Route<br/>Driver Status<br/>Estimated Arrival<br/>Simple Point-to-Point Tracking]
     
     TrackingMap --> DeliveryStatus{Delivery Status?}
-    DeliveryStatus -->|In Transit| InTransit[In Transit:<br/>- Driver En Route<br/>- Estimated Time<br/>- Customer Notification]
-    DeliveryStatus -->|Delivered| Delivered[Delivered:<br/>- Driver Confirmation<br/>- Customer Signature<br/>- Photos Uploaded]
-    DeliveryStatus -->|Delayed| Delayed[Delayed:<br/>- Reason Provided<br/>- New ETA<br/>- Customer Notification]
+    DeliveryStatus -->|In Transit| InTransit[In Transit:<br/>Driver En Route<br/>Estimated Time<br/>Customer Notification]
+    DeliveryStatus -->|Delivered| Delivered[Delivered:<br/>Driver Confirmation<br/>Customer Signature<br/>Photos Uploaded]
+    DeliveryStatus -->|Delayed| Delayed[Delayed:<br/>Reason Provided<br/>New ETA<br/>Customer Notification]
     
-    InTransit --> DeliveryUpdate[Delivery Update:<br/>- Status Change<br/>- Time Update<br/>- Customer Notification]
+    InTransit --> DeliveryUpdate[Delivery Update:<br/>Status Change<br/>Time Update<br/>Customer Notification]
     DeliveryUpdate --> DeliveryStatus
     
-    Delivered --> RentalStart[Rental Period Starts:<br/>- Equipment Handover<br/>- Usage Instructions<br/>- Support Contact]
+    Delivered --> RentalStart[Rental Period Starts:<br/>Equipment Handover<br/>Usage Instructions<br/>Support Contact]
     
-    Delayed --> DelayReason[Delay Reason:<br/>- Traffic<br/>- Equipment Issue<br/>- Delivery Issue<br/>- Other]
-    DelayReason --> NewETA[New ETA:<br/>- Updated Time<br/>- Customer Notification<br/>- Tracking Update]
+    Delayed --> DelayReason[Delay Reason:<br/>Traffic<br/>Equipment Issue<br/>Delivery Issue<br/>Other]
+    DelayReason --> NewETA[New ETA:<br/>Updated Time<br/>Customer Notification<br/>Tracking Update]
     NewETA --> DeliveryStatus
 ```
 
@@ -206,19 +206,19 @@ flowchart TD
 flowchart TD
     DeliveryManagement[Delivery Management] --> DeliveryAction{Delivery Action?}
     
-    DeliveryAction -->|Add Delivery| AddDelivery[Add Delivery Info:<br/>- Driver Name (Text)<br/>- Driver Phone<br/>- Delivery Instructions<br/>- Route Details]
+    DeliveryAction -->|Add Delivery| AddDelivery[Add Delivery Info:<br/>Driver Name Text<br/>Driver Phone<br/>Delivery Instructions<br/>Route Details]
     
-    DeliveryAction -->|View Deliveries| ViewDeliveries[Delivery List:<br/>- Active Deliveries<br/>- Completed Deliveries<br/>- Delivery Details<br/>- Status Updates]
+    DeliveryAction -->|View Deliveries| ViewDeliveries[Delivery List:<br/>Active Deliveries<br/>Completed Deliveries<br/>Delivery Details<br/>Status Updates]
     
-    DeliveryAction -->|Track Delivery| TrackDelivery[Track Active Delivery:<br/>- Order Status<br/>- Driver Contact<br/>- Estimated Arrival<br/>- Customer Updates]
+    DeliveryAction -->|Track Delivery| TrackDelivery[Track Active Delivery:<br/>Order Status<br/>Driver Contact<br/>Estimated Arrival<br/>Customer Updates]
     
-    AddDelivery --> DeliveryInfo[Delivery Information:<br/>- Driver Name<br/>- Phone Number<br/>- Delivery Instructions<br/>- Route Information]
+    AddDelivery --> DeliveryInfo[Delivery Information:<br/>Driver Name<br/>Phone Number<br/>Delivery Instructions<br/>Route Information]
     
-    DeliveryInfo --> SaveDelivery[Save Delivery:<br/>- Add to System<br/>- Send Notification<br/>- Update Delivery List]
+    DeliveryInfo --> SaveDelivery[Save Delivery:<br/>Add to System<br/>Send Notification<br/>Update Delivery List]
     
-    ViewDeliveries --> DeliveryDetails[Delivery Details:<br/>- Order Information<br/>- Customer Info<br/>- Delivery Address<br/>- Status Updates]
+    ViewDeliveries --> DeliveryDetails[Delivery Details:<br/>Order Information<br/>Customer Info<br/>Delivery Address<br/>Status Updates]
     
-    TrackDelivery --> DeliveryMap[Delivery Map:<br/>- Point A to Point B<br/>- Driver Status<br/>- Estimated Time<br/>- Customer Notifications]
+    TrackDelivery --> DeliveryMap[Delivery Map:<br/>Point A to Point B<br/>Driver Status<br/>Estimated Time<br/>Customer Notifications]
 ```
 
 ## Admin Dashboard Journey
