@@ -59,13 +59,6 @@ flowchart TD
     IndividualComplete --> IndividualDashboard[Individual Dashboard:<br/>- Search Equipment<br/>- My Orders<br/>- Wallet<br/>- Profile Settings]
     CompanyComplete --> CompanyDashboard[Company Dashboard:<br/>- Pending Verification<br/>- Upload Documents<br/>- PACI Verification<br/>- Limited Features]
     
-    CompanyDashboard --> PACIRequired{PACI Verification Required?}
-    PACIRequired -->|Yes| PACIFlow[PACI Verification Flow:<br/>- Upload Company Documents<br/>- Kuwait Identity App<br/>- Admin Review<br/>- Full Access]
-    PACIRequired -->|No| FullCompanyAccess[Full Company Access:<br/>- Equipment Listing<br/>- Driver Management<br/>- Business Features]
-    
-    PACIFlow --> FullCompanyAccess
-    FullCompanyAccess --> MainDashboard[Main Dashboard]
-    
     AuthCheck -->|Yes| Dashboard
     AuthCheck -->|No| Login[Login Screen]
     Login --> UserTypeLogin{User Type?}
