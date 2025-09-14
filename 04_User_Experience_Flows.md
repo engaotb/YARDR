@@ -174,35 +174,6 @@ flowchart TD
     ResetError --> ResetPassword
 ```
 
-### PACI Verification (Companies Only) - Kuwait Identity App Integration
-
-```mermaid
-flowchart TD
-    PACIVerification[PACI Verification] --> CompanyDocuments[Company Documents:<br/>- Commercial License<br/>- Chamber of Commerce<br/>- Tax Certificate<br/>- Business Registration]
-    
-    CompanyDocuments --> DocumentUpload[Document Upload:<br/>- High Quality Photos<br/>- PDF Files<br/>- Clear Text<br/>- All Pages]
-    
-    DocumentUpload --> DocumentValidation[Document Validation:<br/>- Check Completeness<br/>- Verify Authenticity<br/>- Text Recognition<br/>- Data Extraction]
-    
-    DocumentValidation --> ValidationResult{Validation Result?}
-    ValidationResult -->|Valid| KuwaitIdentityApp[Kuwait Identity App Integration:<br/>- Open Kuwait Identity App<br/>- Scan QR Code<br/>- Authenticate Identity<br/>- Verify Company Owner]
-    ValidationResult -->|Invalid| DocumentError[Document Error:<br/>- Missing Information<br/>- Poor Quality<br/>- Request Resubmission]
-    
-    KuwaitIdentityApp --> IdentityVerification[Identity Verification:<br/>- Biometric Authentication<br/>- Civil ID Verification<br/>- Company Owner Match<br/>- PACI Data Validation]
-    
-    IdentityVerification --> IdentityResult{Identity Result?}
-    IdentityResult -->|Verified| AdminReview[Admin Review:<br/>- Final Verification<br/>- Business Validation<br/>- Approval Process<br/>- Status Update]
-    IdentityResult -->|Failed| IdentityError[Identity Error:<br/>- Authentication Failed<br/>- Data Mismatch<br/>- Retry Process]
-    
-    AdminReview --> ReviewDecision{Review Decision?}
-    ReviewDecision -->|Approved| CompanyVerified[Company Verified:<br/>- Full Platform Access<br/>- Equipment Listing<br/>- Driver Management<br/>- Business Features]
-    ReviewDecision -->|Rejected| RejectionReason[Rejection Reason:<br/>- Specific Issues<br/>- Required Actions<br/>- Resubmission Process]
-    
-    CompanyVerified --> Dashboard[Main Dashboard]
-    DocumentError --> DocumentUpload
-    IdentityError --> KuwaitIdentityApp
-    RejectionReason --> DocumentUpload
-```
 
 ### Company Registration Process
 
