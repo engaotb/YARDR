@@ -3,17 +3,16 @@
 ## Table of Contents
 1. [System Overview & User Roles](#system-overview--user-roles)
 2. [YARDR Unified App Journey](#yardr-unified-app-journey)
-3. [Authentication & Login Flows](#authentication--login-flows)
-4. [Equipment Management Flows](#equipment-management-flows)
-5. [Order & Booking Management](#order--booking-management)
-6. [Payment & Financial Flows](#payment--financial-flows)
-7. [AI Assistant & Smart Features](#ai-assistant--smart-features)
-8. [Tracking & Delivery System](#tracking--delivery-system)
-9. [Admin Dashboard Journey](#admin-dashboard-journey)
-10. [Communication & Support](#communication--support)
-11. [Settings & Profile Management](#settings--profile-management)
-12. [Error Handling & Edge Cases](#error-handling--edge-cases)
-13. [User Experience Considerations](#user-experience-considerations)
+3. [Equipment Management Flows](#equipment-management-flows)
+4. [Order & Booking Management](#order--booking-management)
+5. [Payment & Financial Flows](#payment--financial-flows)
+6. [AI Assistant & Smart Features](#ai-assistant--smart-features)
+7. [Tracking & Delivery System](#tracking--delivery-system)
+8. [Admin Dashboard Journey](#admin-dashboard-journey)
+9. [Communication & Support](#communication--support)
+10. [Settings & Profile Management](#settings--profile-management)
+11. [Error Handling & Edge Cases](#error-handling--edge-cases)
+12. [User Experience Considerations](#user-experience-considerations)
 
 ## System Overview & User Roles
 
@@ -116,66 +115,6 @@ flowchart TD
     CompanyAction -->|Profile| CompanyProfile[Company Profile]
 ```
 
-## Authentication & Login Flows
-
-### Login Process
-
-```mermaid
-flowchart TD
-    LoginScreen[Login Screen] --> UserType{User Type?}
-    
-    UserType -->|Individual| IndividualLogin[Individual Login:<br/>- Phone Number Only<br/>- OTP Verification<br/>- No Password Required]
-    UserType -->|Company| CompanyLogin[Company Login:<br/>- Email Address<br/>- Password<br/>- Remember Me Option]
-    
-    IndividualLogin --> SendOTP[Send OTP:<br/>- SMS Code to Phone<br/>- 6-Digit Code<br/>- 5 Minute Expiry]
-    
-    CompanyLogin --> EmailValidation[Email Validation:<br/>- Check Email Format<br/>- Verify Account Exists<br/>- Check Account Status]
-    
-    SendOTP --> OTPInput[OTP Input:<br/>- Enter 6-Digit Code<br/>- Auto-fill Support<br/>- Resend Option]
-    
-    EmailValidation --> PasswordCheck[Password Check:<br/>- Verify Password<br/>- Check Account Status<br/>- Security Validation]
-    
-    OTPInput --> OTPResult{OTP Result?}
-    PasswordCheck --> LoginResult{Login Result?}
-    
-    OTPResult -->|Success| LoadIndividualData[Load Individual Data:<br/>- Personal Information<br/>- Individual Status<br/>- Basic Permissions]
-    OTPResult -->|Failed| OTPError[OTP Error:<br/>- Wrong Code<br/>- Expired Code<br/>- Resend Required]
-    
-    LoginResult -->|Success| LoadCompanyData[Load Company Data:<br/>- Company Information<br/>- Business Status<br/>- Full Permissions]
-    LoginResult -->|Failed| LoginError[Login Error:<br/>- Wrong Password<br/>- Account Issues<br/>- Security Lock]
-    
-    LoadIndividualData --> IndividualDashboard[Individual Dashboard:<br/>- Search Equipment<br/>- My Orders<br/>- Wallet<br/>- Profile]
-    
-    LoadCompanyData --> CompanyDashboard[Company Dashboard:<br/>- Fleet Management<br/>- Orders<br/>- Analytics<br/>- Driver Management]
-    
-    LoginError --> RetryOptions[Retry Options:<br/>- Try Again<br/>- Forgot Password<br/>- Contact Support]
-    OTPError --> RetryOTP[Retry OTP:<br/>- Resend Code<br/>- Try Again<br/>- Contact Support]
-    
-    RetryOptions --> CompanyLogin
-    RetryOTP --> SendOTP
-```
-
-### Password Recovery (Companies Only)
-
-```mermaid
-flowchart TD
-    ForgotPassword[Forgot Password] --> EmailRecovery[Email Recovery:<br/>- Enter Company Email<br/>- Send Reset Link<br/>- Check Email]
-    
-    EmailRecovery --> SendResetLink[Send Reset Link:<br/>- Email with Reset Link<br/>- 24 Hour Expiry<br/>- Security Token]
-    
-    SendResetLink --> CheckEmail[Check Email:<br/>- Open Reset Link<br/>- Verify Token<br/>- Access Reset Form]
-    
-    CheckEmail --> ResetPassword[Reset Password:<br/>- New Password<br/>- Confirm Password<br/>- Security Requirements]
-    
-    ResetPassword --> PasswordValidation[Password Validation:<br/>- Check Strength<br/>- Verify Match<br/>- Security Check]
-    
-    PasswordValidation --> ResetResult{Reset Result?}
-    ResetResult -->|Success| PasswordUpdated[Password Updated:<br/>- Login with New Password<br/>- Security Notification<br/>- Session Invalidation]
-    ResetResult -->|Failed| ResetError[Reset Error:<br/>- Weak Password<br/>- Mismatch<br/>- Try Again]
-    
-    PasswordUpdated --> CompanyLogin[Company Login Screen]
-    ResetError --> ResetPassword
-```
 
 
 
