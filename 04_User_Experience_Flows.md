@@ -103,6 +103,7 @@ flowchart TD
     IndividualAction -->|Search| EquipmentSearch[Search Equipment]
     IndividualAction -->|Orders| MyOrders[My Orders]
     IndividualAction -->|Wallet| Wallet[Wallet Management]
+    IndividualAction -->|Notifications| Notifications[Notifications:<br/>New Order Notification<br/>Order Status Notification<br/>Document Expiry Notification<br/>Money Transfer Notification]
     IndividualAction -->|Profile| Profile[Profile Settings]
     
     CompanyDashboard --> CompanyAction{Action?}
@@ -110,6 +111,7 @@ flowchart TD
     CompanyAction -->|Orders| OrderManagement[Order Management]
     CompanyAction -->|Analytics| Analytics[Analytics & Reports]
     CompanyAction -->|Delivery| DeliveryManagement[Delivery Management]
+    CompanyAction -->|Notifications| CompanyNotifications[Notifications:<br/>New Order Notification<br/>Order Status Notification<br/>Document Expiry Notification<br/>Money Transfer Notification]
     CompanyAction -->|Profile| CompanyProfile[Company Profile]
 ```
 
@@ -135,7 +137,7 @@ flowchart TD
     ManualSearch --> SearchFilters[Apply Filters:<br/>- Category<br/>- Price Range<br/>- Location<br/>- Availability]
     SearchFilters --> SearchResults[Search Results]
     
-    CategoryBrowse --> CategoryList[Category List:<br/>- Earth Moving<br/>- Lifting<br/>- Concrete<br/>- Hauling]
+    CategoryBrowse --> CategoryList[Category List:<br/>Loader<br/>Water Tanker<br/>Crane Trailer<br/>Half Lorry<br/>Boom Truck<br/>Grader]
     CategoryList --> CategoryEquipment[Category Equipment List]
     
     AIRecommendations --> SelectEquipment[Select Equipment]
@@ -149,18 +151,18 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    AddEquipment[Add New Equipment] --> EquipmentInfo[Equipment Information:<br/>Equipment Name<br/>Category<br/>Model and Year<br/>Capacity<br/>Location<br/>Description]
+    AddEquipment[Add New Equipment] --> EquipmentInfo[Equipment Information:<br/>Equipment Type<br/>Brand Name<br/>Model<br/>Model Year<br/>Equipment Capacity<br/>Registration Number<br/>Registration Expiry Date<br/>Location<br/>Description]
     
     EquipmentInfo --> Specifications[Add Specifications:<br/>Technical Details<br/>Features<br/>Attachments<br/>Dimensions]
     
-    Specifications --> Pricing[Set Pricing:<br/>Daily Rate<br/>Hourly Rate<br/>Weekly Rate<br/>Monthly Rate<br/>Delivery Fee<br/>Operator Fee]
+    Specifications --> Pricing[Set Pricing:<br/>Daily Rate<br/>Monthly Rate<br/>Weekly Rate<br/>Hourly Rate<br/>Trip Rate<br/>Lumpsum Rate<br/>Mobilization Required Y/N<br/>Reference Price]
     
     Pricing --> Photos[Upload Photos:<br/>Multiple Angles<br/>Equipment Condition<br/>Attachments<br/>Documentation]
     
     Photos --> Documents[Upload Documents:<br/>Insurance Certificate<br/>Registration<br/>Maintenance Records<br/>Inspection Reports]
     
     Documents --> DeliveryOption{Delivery Option?}
-    DeliveryOption -->|With Delivery| AddDeliveryInfo[Add Delivery Info:<br/>Driver Name Text<br/>Driver Phone<br/>Delivery Instructions]
+    DeliveryOption -->|With Delivery| AddDeliveryInfo[Add Delivery Info:<br/>Driver Name<br/>Driver Phone Number<br/>Delivery Instructions]
     DeliveryOption -->|Self-Operated| SelfOperated[Self-Operated Equipment]
     
     AddDeliveryInfo --> SaveEquipment[Save Equipment]
