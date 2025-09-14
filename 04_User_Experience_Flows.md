@@ -404,61 +404,31 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    AIAssistant[AI Assistant] --> UserQuery[User Query:<br/>- Natural Language<br/>- Project Description<br/>- Requirements<br/>- Constraints]
+    AIAssistant[AI Assistant] --> UserProblem[User Describes Problem:<br/>- Project Type<br/>- Requirements<br/>- Duration<br/>- Location<br/>- Budget]
     
-    UserQuery --> AIProcessing[AI Processing:<br/>- Analyze Requirements<br/>- Extract Specifications<br/>- Match Equipment<br/>- Calculate Costs]
+    UserProblem --> AIProcessing[AI Processing:<br/>- Analyze Requirements<br/>- Match Equipment<br/>- Calculate Costs<br/>- Suggest Solutions]
     
-    AIProcessing --> AIResponse[AI Response:<br/>- Equipment Recommendations<br/>- Explanations<br/>- Pricing Estimates<br/>- Alternative Options]
+    AIProcessing --> AIRecommendations[AI Recommendations:<br/>- Suggested Equipment<br/>- Quantity Needed<br/>- Total Cost<br/>- Alternative Options]
     
-    AIResponse --> UserAction{User Action?}
-    UserAction -->|Select Equipment| BookEquipment[Book Recommended Equipment]
+    AIRecommendations --> UserAction{User Action?}
+    UserAction -->|Add to Cart| AddToCart[Add to Cart:<br/>- Equipment Added<br/>- Quantity Set<br/>- Price Calculated<br/>- Ready for Checkout]
+    UserAction -->|Modify Quantity| ModifyQuantity[Modify Quantity:<br/>- Adjust Amount<br/>- Recalculate Price<br/>- Update Cart]
+    UserAction -->|Remove Item| RemoveItem[Remove Item:<br/>- Delete from Cart<br/>- Update Total<br/>- Continue Shopping]
+    UserAction -->|Add More| AddMore[Add More Equipment:<br/>- Browse More<br/>- Ask AI Again<br/>- Search Categories]
     UserAction -->|Ask Questions| FollowUpQuestions[Follow-up Questions:<br/>- Clarify Requirements<br/>- Compare Options<br/>- Get More Details]
-    UserAction -->|Refine Search| RefineSearch[Refine Search:<br/>- Adjust Filters<br/>- Modify Requirements<br/>- Try Different Approach]
     
+    AddToCart --> CartReview[Cart Review:<br/>- Check Items<br/>- Verify Quantities<br/>- Review Total<br/>- Proceed to Checkout]
+    ModifyQuantity --> CartReview
+    RemoveItem --> CartReview
+    AddMore --> AIAssistant
     FollowUpQuestions --> AIProcessing
-    RefineSearch --> AIProcessing
-    BookEquipment --> CreateBooking
+    
+    CartReview --> Checkout[Proceed to Checkout]
 ```
 
-### Smart Search & Filtering
-
-```mermaid
-flowchart TD
-    SmartSearch[Smart Search] --> SearchInput[Search Input:<br/>- Text Search<br/>- Voice Search<br/>- Image Search<br/>- Category Browse]
-    
-    SearchInput --> SearchProcessing[Search Processing:<br/>- Query Analysis<br/>- Intent Recognition<br/>- Filter Application<br/>- Result Ranking]
-    
-    SearchProcessing --> SearchResults[Search Results:<br/>- Equipment List<br/>- Relevance Score<br/>- Availability Status<br/>- Pricing Info]
-    
-    SearchResults --> UserSelection{User Selection?}
-    UserSelection -->|Select Equipment| EquipmentDetails
-    UserSelection -->|Refine Search| ApplyFilters[Apply Filters:<br/>- Price Range<br/>- Location<br/>- Availability<br/>- Features]
-    UserSelection -->|Save Search| SaveSearch[Save Search:<br/>- Search Criteria<br/>- Alerts<br/>- Notifications]
-    
-    ApplyFilters --> SearchProcessing
-    SaveSearch --> SearchAlerts[Search Alerts:<br/>- New Matches<br/>- Price Changes<br/>- Availability Updates]
-```
 
 ## Communication & Support
 
-### In-App Communication
-
-```mermaid
-flowchart TD
-    Communication[Communication] --> CommType{Communication Type?}
-    
-    CommType -->|Chat| InAppChat[In-App Chat:<br/>- Real-time Messaging<br/>- File Sharing<br/>- Voice Messages<br/>- Message History]
-    
-    CommType -->|Call| VoiceCall[Voice Call:<br/>- Direct Calling<br/>- Call Recording<br/>- Call History<br/>- Quality Rating]
-    
-    CommType -->|Support| SupportTicket[Support Ticket:<br/>- Issue Description<br/>- Priority Level<br/>- Attachments<br/>- Status Tracking]
-    
-    InAppChat --> ChatFeatures[Chat Features:<br/>- Typing Indicators<br/>- Read Receipts<br/>- Message Encryption<br/>- Auto-translation]
-    
-    VoiceCall --> CallFeatures[Call Features:<br/>- Call Quality<br/>- Noise Cancellation<br/>- Call Transfer<br/>- Conference Calling]
-    
-    SupportTicket --> TicketManagement[Ticket Management:<br/>- Auto-assignment<br/>- Escalation Rules<br/>- Response Time<br/>- Resolution Tracking]
-```
 
 ### Help & Support System
 
