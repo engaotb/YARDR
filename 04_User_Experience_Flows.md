@@ -111,68 +111,50 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    LoginScreen[Login Screen] --> LoginMethod{Login Method?}
+    LoginScreen[Login Screen] --> UserType{User Type?}
     
-    LoginMethod -->|Email| EmailLogin[Email Login:<br/>- Email Address<br/>- Password<br/>- Remember Me Option]
-    LoginMethod -->|Phone| PhoneLogin[Phone Login:<br/>- Phone Number<br/>- OTP Verification]
-    LoginMethod -->|Social| SocialLogin[Social Login:<br/>- Google<br/>- Apple<br/>- Facebook]
+    UserType -->|Individual| IndividualLogin[Individual Login:<br/>- Phone Number Only<br/>- OTP Verification<br/>- No Password Required]
+    UserType -->|Company| CompanyLogin[Company Login:<br/>- Email Address<br/>- Password<br/>- Remember Me Option]
     
-    EmailLogin --> EmailValidation[Email Validation:<br/>- Check Email Format<br/>- Verify Account Exists<br/>- Check Account Status]
+    IndividualLogin --> SendOTP[Send OTP:<br/>- SMS Code to Phone<br/>- 6-Digit Code<br/>- 5 Minute Expiry]
     
-    PhoneLogin --> SendOTP[Send OTP:<br/>- SMS Code to Phone<br/>- 6-Digit Code<br/>- 5 Minute Expiry]
-    
-    SocialLogin --> SocialAuth[Social Authentication:<br/>- OAuth Process<br/>- Permission Grant<br/>- Account Linking]
-    
-    EmailValidation --> PasswordCheck[Password Check:<br/>- Verify Password<br/>- Check Account Status<br/>- Security Validation]
+    CompanyLogin --> EmailValidation[Email Validation:<br/>- Check Email Format<br/>- Verify Account Exists<br/>- Check Account Status]
     
     SendOTP --> OTPInput[OTP Input:<br/>- Enter 6-Digit Code<br/>- Auto-fill Support<br/>- Resend Option]
     
-    SocialAuth --> SocialResult{Social Auth Result?}
-    SocialResult -->|Success| LinkAccount[Link to Existing Account]
-    SocialResult -->|New User| CreateAccount[Create New Account]
+    EmailValidation --> PasswordCheck[Password Check:<br/>- Verify Password<br/>- Check Account Status<br/>- Security Validation]
     
-    PasswordCheck --> LoginResult{Login Result?}
     OTPInput --> OTPResult{OTP Result?}
+    PasswordCheck --> LoginResult{Login Result?}
     
-    LoginResult -->|Success| LoadUserData[Load User Data:<br/>- Profile Information<br/>- User Type<br/>- Permissions]
-    LoginResult -->|Failed| LoginError[Login Error:<br/>- Wrong Password<br/>- Account Issues<br/>- Security Lock]
-    
-    OTPResult -->|Success| LoadUserData
+    OTPResult -->|Success| LoadIndividualData[Load Individual Data:<br/>- Personal Information<br/>- Individual Status<br/>- Basic Permissions]
     OTPResult -->|Failed| OTPError[OTP Error:<br/>- Wrong Code<br/>- Expired Code<br/>- Resend Required]
     
-    LinkAccount --> LoadUserData
-    CreateAccount --> OnboardingFlow[Onboarding Flow]
+    LoginResult -->|Success| LoadCompanyData[Load Company Data:<br/>- Company Information<br/>- Business Status<br/>- Full Permissions]
+    LoginResult -->|Failed| LoginError[Login Error:<br/>- Wrong Password<br/>- Account Issues<br/>- Security Lock]
     
-    LoadUserData --> Dashboard[Main Dashboard]
-    OnboardingFlow --> Dashboard
+    LoadIndividualData --> IndividualDashboard[Individual Dashboard:<br/>- Search Equipment<br/>- My Orders<br/>- Wallet<br/>- Profile]
+    
+    LoadCompanyData --> CompanyDashboard[Company Dashboard:<br/>- Fleet Management<br/>- Orders<br/>- Analytics<br/>- Driver Management]
     
     LoginError --> RetryOptions[Retry Options:<br/>- Try Again<br/>- Forgot Password<br/>- Contact Support]
     OTPError --> RetryOTP[Retry OTP:<br/>- Resend Code<br/>- Try Again<br/>- Contact Support]
     
-    RetryOptions --> LoginScreen
+    RetryOptions --> CompanyLogin
     RetryOTP --> SendOTP
 ```
 
-### Password Recovery
+### Password Recovery (Companies Only)
 
 ```mermaid
 flowchart TD
-    ForgotPassword[Forgot Password] --> RecoveryMethod{Recovery Method?}
-    
-    RecoveryMethod -->|Email| EmailRecovery[Email Recovery:<br/>- Enter Email Address<br/>- Send Reset Link<br/>- Check Email]
-    RecoveryMethod -->|Phone| PhoneRecovery[Phone Recovery:<br/>- Enter Phone Number<br/>- Send OTP<br/>- Verify Identity]
+    ForgotPassword[Forgot Password] --> EmailRecovery[Email Recovery:<br/>- Enter Company Email<br/>- Send Reset Link<br/>- Check Email]
     
     EmailRecovery --> SendResetLink[Send Reset Link:<br/>- Email with Reset Link<br/>- 24 Hour Expiry<br/>- Security Token]
     
-    PhoneRecovery --> SendResetOTP[Send Reset OTP:<br/>- SMS with Reset Code<br/>- 10 Minute Expiry<br/>- One-time Use]
-    
     SendResetLink --> CheckEmail[Check Email:<br/>- Open Reset Link<br/>- Verify Token<br/>- Access Reset Form]
     
-    SendResetOTP --> EnterResetOTP[Enter Reset OTP:<br/>- 6-Digit Code<br/>- Verify OTP<br/>- Access Reset Form]
-    
     CheckEmail --> ResetPassword[Reset Password:<br/>- New Password<br/>- Confirm Password<br/>- Security Requirements]
-    
-    EnterResetOTP --> ResetPassword
     
     ResetPassword --> PasswordValidation[Password Validation:<br/>- Check Strength<br/>- Verify Match<br/>- Security Check]
     
@@ -180,11 +162,11 @@ flowchart TD
     ResetResult -->|Success| PasswordUpdated[Password Updated:<br/>- Login with New Password<br/>- Security Notification<br/>- Session Invalidation]
     ResetResult -->|Failed| ResetError[Reset Error:<br/>- Weak Password<br/>- Mismatch<br/>- Try Again]
     
-    PasswordUpdated --> LoginScreen
+    PasswordUpdated --> CompanyLogin[Company Login Screen]
     ResetError --> ResetPassword
 ```
 
-### PACI Verification (Companies Only)
+### PACI Verification (Companies Only) - Kuwait Identity App Integration
 
 ```mermaid
 flowchart TD
@@ -195,12 +177,14 @@ flowchart TD
     DocumentUpload --> DocumentValidation[Document Validation:<br/>- Check Completeness<br/>- Verify Authenticity<br/>- Text Recognition<br/>- Data Extraction]
     
     DocumentValidation --> ValidationResult{Validation Result?}
-    ValidationResult -->|Valid| PACIAPI[PACI API Integration:<br/>- Company Name Match<br/>- License Number Check<br/>- Status Verification<br/>- Data Cross-Reference]
+    ValidationResult -->|Valid| KuwaitIdentityApp[Kuwait Identity App Integration:<br/>- Open Kuwait Identity App<br/>- Scan QR Code<br/>- Authenticate Identity<br/>- Verify Company Owner]
     ValidationResult -->|Invalid| DocumentError[Document Error:<br/>- Missing Information<br/>- Poor Quality<br/>- Request Resubmission]
     
-    PACIAPI --> PACIResult{PACI Result?}
-    PACIResult -->|Verified| AdminReview[Admin Review:<br/>- Final Verification<br/>- Business Validation<br/>- Approval Process<br/>- Status Update]
-    PACIResult -->|Failed| PACIError[PACI Error:<br/>- Data Mismatch<br/>- Invalid License<br/>- Contact Support]
+    KuwaitIdentityApp --> IdentityVerification[Identity Verification:<br/>- Biometric Authentication<br/>- Civil ID Verification<br/>- Company Owner Match<br/>- PACI Data Validation]
+    
+    IdentityVerification --> IdentityResult{Identity Result?}
+    IdentityResult -->|Verified| AdminReview[Admin Review:<br/>- Final Verification<br/>- Business Validation<br/>- Approval Process<br/>- Status Update]
+    IdentityResult -->|Failed| IdentityError[Identity Error:<br/>- Authentication Failed<br/>- Data Mismatch<br/>- Retry Process]
     
     AdminReview --> ReviewDecision{Review Decision?}
     ReviewDecision -->|Approved| CompanyVerified[Company Verified:<br/>- Full Platform Access<br/>- Equipment Listing<br/>- Driver Management<br/>- Business Features]
@@ -208,9 +192,8 @@ flowchart TD
     
     CompanyVerified --> Dashboard[Main Dashboard]
     DocumentError --> DocumentUpload
-    PACIError --> ContactSupport[Contact Support:<br/>- Manual Verification<br/>- Alternative Process<br/>- Support Ticket]
+    IdentityError --> KuwaitIdentityApp
     RejectionReason --> DocumentUpload
-    ContactSupport --> PACIVerification
 ```
 
 ### Company Registration Process
@@ -269,9 +252,9 @@ flowchart TD
 | Feature | Individual Users | Company Users |
 |---------|------------------|---------------|
 | **Registration** | Simple (Name, Phone, Email) | Complex (Company Details, Documents) |
-| **PACI Verification** | ❌ Not Required | ✅ Required |
-| **Email Login** | ✅ Available | ✅ Available |
-| **Phone Login** | ✅ Available | ✅ Available |
+| **PACI Verification** | ❌ Not Required | ✅ Required (Kuwait Identity App) |
+| **Login Method** | Phone + OTP Only | Email + Password Only |
+| **Password Recovery** | ❌ Not Available | ✅ Available (Email) |
 | **Platform Access** | Basic (Rent Only) | Full (Rent + List Equipment) |
 | **Equipment Listing** | ❌ Not Allowed | ✅ Allowed |
 | **Driver Management** | ❌ Not Available | ✅ Available |
