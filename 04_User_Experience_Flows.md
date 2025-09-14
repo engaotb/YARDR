@@ -149,28 +149,28 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    AddEquipment[Add New Equipment] --> EquipmentInfo[Equipment Information:<br/>- Equipment Name<br/>- Category<br/>- Model & Year<br/>- Capacity<br/>- Location<br/>- Description]
+    AddEquipment[Add New Equipment] --> EquipmentInfo[Equipment Information:<br/>Equipment Name<br/>Category<br/>Model and Year<br/>Capacity<br/>Location<br/>Description]
     
-    EquipmentInfo --> Specifications[Add Specifications:<br/>- Technical Details<br/>- Features<br/>- Attachments<br/>- Dimensions]
+    EquipmentInfo --> Specifications[Add Specifications:<br/>Technical Details<br/>Features<br/>Attachments<br/>Dimensions]
     
-    Specifications --> Pricing[Set Pricing:<br/>- Daily Rate<br/>- Hourly Rate<br/>- Weekly Rate<br/>- Monthly Rate<br/>- Delivery Fee<br/>- Operator Fee]
+    Specifications --> Pricing[Set Pricing:<br/>Daily Rate<br/>Hourly Rate<br/>Weekly Rate<br/>Monthly Rate<br/>Delivery Fee<br/>Operator Fee]
     
-    Pricing --> Photos[Upload Photos:<br/>- Multiple Angles<br/>- Equipment Condition<br/>- Attachments<br/>- Documentation]
+    Pricing --> Photos[Upload Photos:<br/>Multiple Angles<br/>Equipment Condition<br/>Attachments<br/>Documentation]
     
-    Photos --> Documents[Upload Documents:<br/>- Insurance Certificate<br/>- Registration<br/>- Maintenance Records<br/>- Inspection Reports]
+    Photos --> Documents[Upload Documents:<br/>Insurance Certificate<br/>Registration<br/>Maintenance Records<br/>Inspection Reports]
     
     Documents --> DeliveryOption{Delivery Option?}
-    DeliveryOption -->|With Delivery| AddDeliveryInfo[Add Delivery Info:<br/>- Driver Name (Text)<br/>- Driver Phone<br/>- Delivery Instructions]
+    DeliveryOption -->|With Delivery| AddDeliveryInfo[Add Delivery Info:<br/>Driver Name Text<br/>Driver Phone<br/>Delivery Instructions]
     DeliveryOption -->|Self-Operated| SelfOperated[Self-Operated Equipment]
     
     AddDeliveryInfo --> SaveEquipment[Save Equipment]
     SelfOperated --> SaveEquipment
     
-    SaveEquipment --> AdminReview[Admin Review:<br/>- Document Verification<br/>- Equipment Validation<br/>- Quality Check<br/>- Approval Process]
+    SaveEquipment --> AdminReview[Admin Review:<br/>Document Verification<br/>Equipment Validation<br/>Quality Check<br/>Approval Process]
     
     AdminReview --> ReviewResult{Review Result?}
-    ReviewResult -->|Approved| EquipmentLive[Equipment Live:<br/>- Available for Rent<br/>- Searchable<br/>- Bookable]
-    ReviewResult -->|Rejected| FixIssues[Fix Issues:<br/>- Review Comments<br/>- Update Information<br/>- Resubmit]
+    ReviewResult -->|Approved| EquipmentLive[Equipment Live:<br/>Available for Rent<br/>Searchable<br/>Bookable]
+    ReviewResult -->|Rejected| FixIssues[Fix Issues:<br/>Review Comments<br/>Update Information<br/>Resubmit]
 ```
 
 ## Tracking & Delivery System
