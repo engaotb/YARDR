@@ -242,9 +242,7 @@ flowchart TD
     AdminLogin[Admin Login] --> TwoFA[Two-Factor Authentication]
     TwoFA --> AdminDashboard[Admin Dashboard]
     
-    AdminDashboard --> AdminMetrics[Platform Metrics:<br/>- Total Users: 1,247<br/>- Active Orders: 342<br/>- Revenue: $48.2K<br/>- Equipment: 156]
-    
-    AdminMetrics --> AdminAction{Admin Action?}
+    AdminDashboard --> AdminAction{Admin Action?}
     
     AdminAction -->|User Management| UserManagement[User Management:<br/>- User List<br/>- Verification Queue<br/>- Account Status<br/>- User Analytics]
     
