@@ -79,7 +79,7 @@ flowchart TD
     OTPResult -->|Success| IndividualDashboard[Individual Dashboard:<br/>- Search Equipment<br/>- My Orders<br/>- Wallet<br/>- Profile]
     OTPResult -->|Failed| OTPError[OTP Error:<br/>- Wrong Code<br/>- Expired Code<br/>- Resend Required]
     
-    LoginResult -->|Success| CompanyDashboard[Company Dashboard:<br/>- Fleet Management<br/>- Orders<br/>- Analytics<br/>- Driver Management]
+    LoginResult -->|Success| CompanyDashboard[Company Dashboard:<br/>- Fleet Management<br/>- Orders<br/>- Analytics<br/>- Delivery Management]
     LoginResult -->|Failed| LoginError[Login Error:<br/>- Wrong Password<br/>- Account Issues<br/>- Security Lock]
     
     LoginError --> RetryOptions[Retry Options:<br/>- Try Again<br/>- Forgot Password<br/>- Contact Support]
@@ -97,7 +97,7 @@ flowchart TD
     
     UserType -->|Individual| IndividualDashboard[Individual Dashboard:<br/>- Search Equipment<br/>- My Orders<br/>- Wallet<br/>- Profile]
     
-    UserType -->|Company| CompanyDashboard[Company Dashboard:<br/>- Fleet Management<br/>- Orders<br/>- Analytics<br/>- Driver Management]
+    UserType -->|Company| CompanyDashboard[Company Dashboard:<br/>- Fleet Management<br/>- Orders<br/>- Analytics<br/>- Delivery Management]
     
     IndividualDashboard --> IndividualAction{Action?}
     IndividualAction -->|Search| EquipmentSearch[Search Equipment]
@@ -109,7 +109,7 @@ flowchart TD
     CompanyAction -->|Fleet| FleetManagement[Fleet Management]
     CompanyAction -->|Orders| OrderManagement[Order Management]
     CompanyAction -->|Analytics| Analytics[Analytics & Reports]
-    CompanyAction -->|Drivers| DriverManagement[Driver Management]
+    CompanyAction -->|Delivery| DeliveryManagement[Delivery Management]
     CompanyAction -->|Profile| CompanyProfile[Company Profile]
 ```
 
@@ -159,11 +159,11 @@ flowchart TD
     
     Photos --> Documents[Upload Documents:<br/>- Insurance Certificate<br/>- Registration<br/>- Maintenance Records<br/>- Inspection Reports]
     
-    Documents --> DriverAssignment{Assign Driver?}
-    DriverAssignment -->|Yes| SelectDriver[Select Driver:<br/>- Available Drivers<br/>- Driver Details<br/>- Contact Information]
-    DriverAssignment -->|No| SelfOperated[Self-Operated Equipment]
+    Documents --> DeliveryOption{Delivery Option?}
+    DeliveryOption -->|With Delivery| AddDeliveryInfo[Add Delivery Info:<br/>- Driver Name (Text)<br/>- Driver Phone<br/>- Delivery Instructions]
+    DeliveryOption -->|Self-Operated| SelfOperated[Self-Operated Equipment]
     
-    SelectDriver --> SaveEquipment[Save Equipment]
+    AddDeliveryInfo --> SaveEquipment[Save Equipment]
     SelfOperated --> SaveEquipment
     
     SaveEquipment --> AdminReview[Admin Review:<br/>- Document Verification<br/>- Equipment Validation<br/>- Quality Check<br/>- Approval Process]
@@ -179,17 +179,11 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    OrderAccepted[Order Accepted] --> DriverAssignment[Driver Assignment:<br/>- Select Available Driver<br/>- Driver Contact Info<br/>- Assignment Details]
+    OrderAccepted[Order Accepted] --> DeliverySetup[Delivery Setup:<br/>- Driver Name (Text Field)<br/>- Driver Phone Number<br/>- Delivery Instructions<br/>- Point A to Point B Route]
     
-    DriverAssignment --> DriverNotification[Driver Notification:<br/>- SMS/Phone Call<br/>- Assignment Details<br/>- Equipment Info<br/>- Customer Contact]
+    DeliverySetup --> DeliveryScheduled[Delivery Scheduled:<br/>- Point A: Equipment Location<br/>- Point B: Delivery Location<br/>- Estimated Time<br/>- Driver Contact Info]
     
-    DriverNotification --> DriverConfirmation{Driver Confirms?}
-    DriverConfirmation -->|Yes| DeliveryScheduled[Delivery Scheduled:<br/>- Point A: Equipment Location<br/>- Point B: Delivery Location<br/>- Estimated Time<br/>- Driver Details]
-    DriverConfirmation -->|No| FindAlternativeDriver[Find Alternative Driver]
-    
-    FindAlternativeDriver --> DriverAssignment
-    
-    DeliveryScheduled --> TrackingMap[Tracking Map Display:<br/>- Point A to Point B Route<br/>- Driver Status<br/>- Estimated Arrival<br/>- No GPS Tracking]
+    DeliveryScheduled --> TrackingMap[Tracking Map Display:<br/>- Point A to Point B Route<br/>- Driver Status<br/>- Estimated Arrival<br/>- Simple Point-to-Point Tracking]
     
     TrackingMap --> DeliveryStatus{Delivery Status?}
     DeliveryStatus -->|In Transit| InTransit[In Transit:<br/>- Driver En Route<br/>- Estimated Time<br/>- Customer Notification]
@@ -201,32 +195,28 @@ flowchart TD
     
     Delivered --> RentalStart[Rental Period Starts:<br/>- Equipment Handover<br/>- Usage Instructions<br/>- Support Contact]
     
-    Delayed --> DelayReason[Delay Reason:<br/>- Traffic<br/>- Equipment Issue<br/>- Driver Issue<br/>- Other]
+    Delayed --> DelayReason[Delay Reason:<br/>- Traffic<br/>- Equipment Issue<br/>- Delivery Issue<br/>- Other]
     DelayReason --> NewETA[New ETA:<br/>- Updated Time<br/>- Customer Notification<br/>- Tracking Update]
     NewETA --> DeliveryStatus
 ```
 
-### Driver Management (Company Side)
+### Delivery Management (Company Side)
 
 ```mermaid
 flowchart TD
-    DriverManagement[Driver Management] --> DriverAction{Driver Action?}
+    DeliveryManagement[Delivery Management] --> DeliveryAction{Delivery Action?}
     
-    DriverAction -->|Add Driver| AddDriver[Add New Driver:<br/>- Full Name<br/>- Phone Number<br/>- License Details<br/>- Contact Information]
+    DeliveryAction -->|Add Delivery| AddDelivery[Add Delivery Info:<br/>- Driver Name (Text)<br/>- Driver Phone<br/>- Delivery Instructions<br/>- Route Details]
     
-    DriverAction -->|View Drivers| ViewDrivers[Driver List:<br/>- Available Drivers<br/>- Busy Drivers<br/>- Driver Details<br/>- Performance Stats]
+    DeliveryAction -->|View Deliveries| ViewDeliveries[Delivery List:<br/>- Active Deliveries<br/>- Completed Deliveries<br/>- Delivery Details<br/>- Status Updates]
     
-    DriverAction -->|Assign Driver| AssignDriver[Assign to Delivery:<br/>- Select Driver<br/>- Order Details<br/>- Delivery Instructions<br/>- Contact Info]
+    DeliveryAction -->|Track Delivery| TrackDelivery[Track Active Delivery:<br/>- Order Status<br/>- Driver Contact<br/>- Estimated Arrival<br/>- Customer Updates]
     
-    DriverAction -->|Track Delivery| TrackDelivery[Track Active Delivery:<br/>- Order Status<br/>- Driver Location<br/>- Estimated Arrival<br/>- Customer Updates]
+    AddDelivery --> DeliveryInfo[Delivery Information:<br/>- Driver Name<br/>- Phone Number<br/>- Delivery Instructions<br/>- Route Information]
     
-    AddDriver --> DriverInfo[Driver Information:<br/>- Personal Details<br/>- License Number<br/>- Phone Number<br/>- Emergency Contact]
+    DeliveryInfo --> SaveDelivery[Save Delivery:<br/>- Add to System<br/>- Send Notification<br/>- Update Delivery List]
     
-    DriverInfo --> SaveDriver[Save Driver:<br/>- Add to System<br/>- Send Notification<br/>- Update Driver List]
-    
-    AssignDriver --> SelectOrder[Select Order:<br/>- Pending Deliveries<br/>- Order Details<br/>- Customer Info<br/>- Delivery Address]
-    
-    SelectOrder --> AssignToDriver[Assign Driver:<br/>- Send Assignment<br/>- Provide Details<br/>- Set Expectations<br/>- Track Progress]
+    ViewDeliveries --> DeliveryDetails[Delivery Details:<br/>- Order Information<br/>- Customer Info<br/>- Delivery Address<br/>- Status Updates]
     
     TrackDelivery --> DeliveryMap[Delivery Map:<br/>- Point A to Point B<br/>- Driver Status<br/>- Estimated Time<br/>- Customer Notifications]
 ```
@@ -355,7 +345,7 @@ flowchart TD
     
     OrderStatus -->|Rejected| OrderRejected[Order Rejected:<br/>- Reason Provided<br/>- Alternative Suggestions<br/>- Refund Processed]
     
-    OrderAccepted --> DeliveryTracking[Delivery Tracking:<br/>- Point A: Equipment Location<br/>- Point B: Delivery Location<br/>- Driver Information<br/>- Estimated Arrival]
+    OrderAccepted --> DeliveryTracking[Delivery Tracking:<br/>- Point A: Equipment Location<br/>- Point B: Delivery Location<br/>- Driver Contact Info<br/>- Estimated Arrival]
     
     DeliveryTracking --> EquipmentDelivered[Equipment Delivered:<br/>- Driver Confirmation<br/>- Customer Signature<br/>- Equipment Handover<br/>- Documentation]
     
@@ -463,7 +453,7 @@ flowchart TD
     
     ProfileType -->|Individual| IndividualProfile[Individual Profile:<br/>- Personal Information<br/>- Contact Details<br/>- Preferences<br/>- Verification Status]
     
-    ProfileType -->|Company| CompanyProfile[Company Profile:<br/>- Company Information<br/>- Business Details<br/>- Fleet Management<br/>- Driver Management]
+    ProfileType -->|Company| CompanyProfile[Company Profile:<br/>- Company Information<br/>- Business Details<br/>- Fleet Management<br/>- Delivery Management]
     
     IndividualProfile --> PersonalInfo[Personal Information:<br/>- Full Name<br/>- Phone Number<br/>- Email Address<br/>- Address<br/>- PACI Verification]
     
@@ -471,11 +461,11 @@ flowchart TD
     
     PersonalInfo --> Preferences[User Preferences:<br/>- Language Selection<br/>- Notification Settings<br/>- Privacy Settings<br/>- Security Settings]
     
-    CompanyInfo --> FleetSettings[Fleet Settings:<br/>- Equipment Management<br/>- Driver Management<br/>- Pricing Rules<br/>- Availability Settings]
+    CompanyInfo --> FleetSettings[Fleet Settings:<br/>- Equipment Management<br/>- Delivery Management<br/>- Pricing Rules<br/>- Availability Settings]
     
     Preferences --> NotificationSettings[Notification Settings:<br/>- Push Notifications<br/>- Email Notifications<br/>- SMS Notifications<br/>- Quiet Hours]
     
-    FleetSettings --> DriverSettings[Driver Settings:<br/>- Driver List<br/>- Assignment Rules<br/>- Performance Tracking<br/>- Contact Management]
+    FleetSettings --> DeliverySettings[Delivery Settings:<br/>- Delivery Instructions<br/>- Contact Information<br/>- Route Management<br/>- Status Tracking]
 ```
 
 
