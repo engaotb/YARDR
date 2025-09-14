@@ -59,8 +59,11 @@ flowchart TD
     IndividualComplete --> IndividualDashboard[Individual Dashboard:<br/>- Search Equipment<br/>- My Orders<br/>- Wallet<br/>- Profile Settings]
     CompanyComplete --> CompanyDashboard[Company Dashboard:<br/>- Pending Verification<br/>- Upload Documents<br/>- PACI Verification<br/>- Limited Features]
     
-    AuthCheck -->|Yes| Dashboard
+    AuthCheck -->|Yes| UserTypeCheck{User Type?}
     AuthCheck -->|No| Login[Login Screen]
+    
+    UserTypeCheck -->|Individual| IndividualDashboard
+    UserTypeCheck -->|Company| CompanyDashboard
     Login --> UserTypeLogin{User Type?}
     UserTypeLogin -->|Individual| IndividualLogin[Individual Login:<br/>- Phone Number Only<br/>- OTP Verification<br/>- No Password Required]
     UserTypeLogin -->|Company| CompanyLogin[Company Login:<br/>- Email Address<br/>- Password<br/>- Remember Me Option]
