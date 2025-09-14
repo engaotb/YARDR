@@ -53,32 +53,47 @@ flowchart TD
     PhoneVerification --> ProfileSetup[Profile Setup:<br/>- Address<br/>- Preferences<br/>- Language]
     
     ProfileSetup --> UserTypeCheck{User Type?}
-    UserTypeCheck -->|Individual| IndividualComplete[Individual Registration Complete:<br/>- Basic User Status<br/>- Can Rent Equipment<br/>- No PACI Required]
-    UserTypeCheck -->|Company| PACIVerification[PACI Verification Required:<br/>- Company Documents<br/>- License Verification<br/>- Business Registration<br/>- Admin Review]
+    UserTypeCheck -->|Individual| IndividualComplete[Individual Registration Complete:<br/>- Basic User Status<br/>- Can Rent Equipment<br/>- No PACI Required<br/>- Login with Phone + OTP]
+    UserTypeCheck -->|Company| CompanyComplete[Company Registration Complete:<br/>- Pending Verification<br/>- Limited Access<br/>- Login with Email + Password<br/>- PACI Verification Required]
     
-    IndividualComplete --> Dashboard[Main Dashboard]
-    PACIVerification --> TrustedCompany[Trusted Company Status:<br/>- Full Platform Access<br/>- Can List Equipment<br/>- Driver Management<br/>- Business Features]
-    TrustedCompany --> Dashboard
+    IndividualComplete --> IndividualDashboard[Individual Dashboard:<br/>- Search Equipment<br/>- My Orders<br/>- Wallet<br/>- Profile Settings]
+    CompanyComplete --> CompanyDashboard[Company Dashboard:<br/>- Pending Verification<br/>- Upload Documents<br/>- PACI Verification<br/>- Limited Features]
+    
+    CompanyDashboard --> PACIRequired{PACI Verification Required?}
+    PACIRequired -->|Yes| PACIFlow[PACI Verification Flow:<br/>- Upload Company Documents<br/>- Kuwait Identity App<br/>- Admin Review<br/>- Full Access]
+    PACIRequired -->|No| FullCompanyAccess[Full Company Access:<br/>- Equipment Listing<br/>- Driver Management<br/>- Business Features]
+    
+    PACIFlow --> FullCompanyAccess
+    FullCompanyAccess --> MainDashboard[Main Dashboard]
     
     AuthCheck -->|Yes| Dashboard
     AuthCheck -->|No| Login[Login Screen]
-    Login --> LoginMethod{Login Method?}
-    LoginMethod -->|Email| EmailLogin[Email Login:<br/>- Email Address<br/>- Password<br/>- Remember Me]
-    LoginMethod -->|Phone| PhoneLogin[Phone Login:<br/>- Phone Number<br/>- OTP Verification]
+    Login --> UserTypeLogin{User Type?}
+    UserTypeLogin -->|Individual| IndividualLogin[Individual Login:<br/>- Phone Number Only<br/>- OTP Verification<br/>- No Password Required]
+    UserTypeLogin -->|Company| CompanyLogin[Company Login:<br/>- Email Address<br/>- Password<br/>- Remember Me Option]
     
-    EmailLogin --> LoginValidation[Login Validation:<br/>- Check Credentials<br/>- Verify Account<br/>- Check Status]
-    PhoneLogin --> SendOTP[Send OTP:<br/>- SMS Code<br/>- Verification]
+    IndividualLogin --> SendOTP[Send OTP:<br/>- SMS Code to Phone<br/>- 6-Digit Code<br/>- 5 Minute Expiry]
     
-    SendOTP --> OTPVerification[OTP Verification:<br/>- Enter Code<br/>- Verify OTP<br/>- Login Success]
+    CompanyLogin --> EmailValidation[Email Validation:<br/>- Check Email Format<br/>- Verify Account Exists<br/>- Check Account Status]
     
-    LoginValidation --> LoginResult{Login Result?}
-    OTPVerification --> LoginResult
+    SendOTP --> OTPInput[OTP Input:<br/>- Enter 6-Digit Code<br/>- Auto-fill Support<br/>- Resend Option]
     
-    LoginResult -->|Success| Dashboard
-    LoginResult -->|Failed| LoginError[Login Error:<br/>- Wrong Credentials<br/>- Account Issues<br/>- Retry Options]
+    EmailValidation --> PasswordCheck[Password Check:<br/>- Verify Password<br/>- Check Account Status<br/>- Security Validation]
     
-    LoginError --> RetryLogin[Retry Login:<br/>- Try Again<br/>- Forgot Password<br/>- Contact Support]
-    RetryLogin --> Login
+    OTPInput --> OTPResult{OTP Result?}
+    PasswordCheck --> LoginResult{Login Result?}
+    
+    OTPResult -->|Success| IndividualDashboard[Individual Dashboard:<br/>- Search Equipment<br/>- My Orders<br/>- Wallet<br/>- Profile]
+    OTPResult -->|Failed| OTPError[OTP Error:<br/>- Wrong Code<br/>- Expired Code<br/>- Resend Required]
+    
+    LoginResult -->|Success| CompanyDashboard[Company Dashboard:<br/>- Fleet Management<br/>- Orders<br/>- Analytics<br/>- Driver Management]
+    LoginResult -->|Failed| LoginError[Login Error:<br/>- Wrong Password<br/>- Account Issues<br/>- Security Lock]
+    
+    LoginError --> RetryOptions[Retry Options:<br/>- Try Again<br/>- Forgot Password<br/>- Contact Support]
+    OTPError --> RetryOTP[Retry OTP:<br/>- Resend Code<br/>- Try Again<br/>- Contact Support]
+    
+    RetryOptions --> CompanyLogin
+    RetryOTP --> SendOTP
 ```
 
 ### Main Dashboard Navigation
