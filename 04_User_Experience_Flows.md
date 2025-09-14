@@ -315,29 +315,6 @@ flowchart TD
     AdminAction -->|System Settings| SystemSettings[System Settings:<br/>- Platform Configuration<br/>- Payment Settings<br/>- Notification Settings<br/>- Security Settings]
 ```
 
-### User Management Flow
-
-```mermaid
-flowchart TD
-    UserManagement[User Management] --> UserAction{User Action?}
-    
-    UserAction -->|Verify User| VerifyUser[Verify User:<br/>- Review Documents<br/>- PACI Verification<br/>- Approve/Reject<br/>- Send Notification]
-    
-    UserAction -->|Suspend User| SuspendUser[Suspend User:<br/>- Reason<br/>- Duration<br/>- Notification<br/>- Appeal Process]
-    
-    UserAction -->|Edit User| EditUser[Edit User Information:<br/>- Personal Details<br/>- Contact Info<br/>- Preferences<br/>- Permissions]
-    
-    VerifyUser --> ReviewDocuments[Review Documents:<br/>- ID Verification<br/>- Company Documents<br/>- PACI Data<br/>- Additional Info]
-    
-    ReviewDocuments --> VerifyDecision{Verification Decision?}
-    VerifyDecision -->|Approve| ApproveUser[Approve User:<br/>- Update Status<br/>- Send Notification<br/>- Enable Features<br/>- Log Action]
-    VerifyDecision -->|Reject| RejectUser[Reject User:<br/>- Provide Reason<br/>- Send Notification<br/>- Request Resubmission<br/>- Log Action]
-    VerifyDecision -->|Request More Info| RequestInfo[Request More Info:<br/>- Specify Requirements<br/>- Set Deadline<br/>- Send Notification<br/>- Track Status]
-    
-    SuspendUser --> SuspensionReason[Suspension Reason:<br/>- Policy Violation<br/>- Fraud<br/>- Inactivity<br/>- Other]
-    SuspensionReason --> SuspensionDuration[Suspension Duration:<br/>- Temporary<br/>- Permanent<br/>- Review Date<br/>- Appeal Process]
-    SuspensionDuration --> NotifyUser[Notify User:<br/>- Suspension Notice<br/>- Reason<br/>- Duration<br/>- Appeal Instructions]
-```
 
 ### Equipment Oversight Flow
 
